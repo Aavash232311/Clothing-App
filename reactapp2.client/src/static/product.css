@@ -1,0 +1,52 @@
+#product-form {
+    width: 80%;
+    height: 600px;
+    margin-top: 50px;
+    overflow: auto;
+}
+
+
+#product-form-placer {
+    display: grid;
+    grid-template-columns: 40% 60%;
+}
+#add-category-grid {
+    display: grid;
+    grid-template-columns: 80% 20%;
+}
+.product-form-placer {
+    float: right;
+    width: 100%;
+    margin-top: 15px;
+}
+#button-grid {
+    width: 90%;
+    height: 20px;
+}
+#add-category-button {
+    margin-left: 2px;
+    width: 100%;
+    height: 56px;
+}
+.icons {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    width: 100%;
+}
+
+.icons-actual {
+    float: right;
+    width: 100%;
+    color: rgb(0, 0, 0);
+}
+
+.icons-actual:hover {
+    color: rgb(55, 54, 54)
+}
+
+#searchCategory {
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    width: 100%;
+    overflow: auto;
+    height: 200px;
+}

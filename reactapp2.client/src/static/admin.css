@@ -1,0 +1,131 @@
+#playground {
+  float: right;
+  overflow: auto;
+}
+#admin-structure-placer {
+  display: grid;
+  grid-template-columns: 200px auto;
+}
+
+#addCategory {
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  width: 100%;
+  height: 500px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+.category-labels {
+  width: 95%;
+  margin-left: 10px;
+}
+
+#viewCategory {
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  width: 100%;
+  height: 500px;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+#CategoryGridItems {
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
+#parentSearchOptions {
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  width: 510px;
+  height: 150px;
+  position: absolute;
+  background-color: white;
+  z-index: 100000000;
+  display: block;
+  overflow: auto;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+#append-category-childs {
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  width: 510px;
+  height: 150px;
+  position: absolute;
+  background-color: white;
+  margin-left: 5px;
+}
+
+.options-list {
+  list-style: none;
+  margin-top: 15px;
+  font-weight: lighter;
+  cursor: pointer;
+}
+
+.options-list:hover {
+  color: gray;
+}
+
+.edit-dialouge {
+  width: 450px;
+  height: 250px;
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  user-select: none;
+}
+
+.classic-input {
+  padding: 5px 12px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #24292e;
+  vertical-align: middle;
+  background-color: #ffffff;
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  outline: none;
+  box-shadow: rgba(225, 228, 232, 0.2) 0px 1px 0px 0px inset;
+  :focus {
+    border-color: #0366d6;
+    outline: none;
+    box-shadow: rgba(3, 102, 214, 0.3) 0px 0px 0px 3px;
+  }
+}
+
+.classic-button {
+  display: inline-block;
+  outline: 0;
+  text-align: center;
+  cursor: pointer;
+  padding: 0px 16px;
+  border-radius: 2px;
+  min-width: 80px;
+  height: 32px;
+  background-color: rgb(0, 120, 212);
+  color: rgb(255, 255, 255);
+  font-size: 14px;
+  font-weight: 400;
+  box-sizing: border-box;
+  border: 1px solid rgb(0, 120, 212);
+  :hover {
+    background-color: rgb(16, 110, 190);
+    border: 1px solid rgb(16, 110, 190);
+  }
+}
+
+.admin-labels {
+  margin-top: 20px;
+  float: left;
+  width: 100%;
+  text-align: left;
+  font-weight: lighter;
+  user-select: none;
+  padding: 5px;
+}

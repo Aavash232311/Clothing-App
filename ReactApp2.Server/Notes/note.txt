@@ -1,0 +1,38 @@
+﻿ /* [Route("populate")]
+        [HttpGet]
+        public async Task<IActionResult> Populate()
+        {
+            var random = new Random();
+            for (int i = 1; i<= 500; i++)
+            {
+                Product product = new Product()
+                {
+                    Name = $"product {i}",
+                    Price = random.Next(10, 1000),
+                    Discount = random.Next(10, 1000),
+                    Description = "random description",
+                    Images = new List<string> { "images\\\test.png" },
+                    AvalibleSize = new List<string> { "S", "M", "L" },
+                    Category = GenerateRandomCategoryIds(random),
+                    Gender = random.Next(0, 2) == 0 ? "Male" : "Female",
+                    Added = DateTime.Now
+                };
+                context.Add(product);
+                await context.SaveChangesAsync();
+            }
+            return new JsonResult(Ok());
+        }
+
+        private List<string> GenerateRandomCategoryIds(Random random)
+        {
+            var categoryIds = new List<string>
+            {
+                "E3D73535-6EF8-41AA-DFEE-08DC83E9E6A0",
+                "78FC1C50-74BA-4E12-DFEF-08DC83E9E6A0",
+                "8ADC9E76-3E5F-4509-DFF0-08DC83E9E6A0",
+                "AC9DFC31-C46F-4F24-DFF1-08DC83E9E6A0",
+                "9F73F4DB-9736-4152-DFF2-08DC83E9E6A0"
+            };
+
+            return categoryIds.OrderBy(x => random.Next()).Take(4).ToList();
+        }*/

@@ -1,0 +1,159 @@
+#view-bg-frame {
+  background-color: white;
+  width: 100%;
+  height: 100vh;
+}
+
+#product-orientation-frame {
+  width: 100%;
+}
+
+#image-orientation-frame {
+  display: grid;
+  grid-template-columns: 20% 80%;
+  grid-gap: 10px;
+  width: 500px;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  float: left;
+}
+.view-product-label {
+  float: left;
+  margin-left: 50px;
+}
+
+.classic-label {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+}
+
+.grid-container-size {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  cursor: pointer;
+}
+.grid-sizes {
+  width: 100%;
+  height: 60px;
+  border: 1px solid rgb(185, 185, 185);
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  background-color: #f6f5f7;
+}
+.button-28 {
+  appearance: none;
+  background-color: transparent;
+  border: 2px solid #1a1a1a;
+  border-radius: 15px;
+  box-sizing: border-box;
+  color: #3b3b3b;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Roobert, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+  min-height: 60px;
+  min-width: 0;
+  outline: none;
+  padding: 16px 24px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 100%;
+  will-change: transform;
+}
+
+#add-to-cart {
+  width: 350px;
+  margin-left: 50px;
+  margin-top: 10px;
+}
+
+.button-28:disabled {
+  pointer-events: none;
+}
+
+.button-28:hover {
+  color: #fff;
+  background-color: #1a1a1a;
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+
+.button-28:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+.grid-sizes:hover {
+  border: 1px solid black;
+}
+
+#info-div-view-products {
+    height: 500px;
+    overflow: auto;
+    overflow: -moz-scrollbars-none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none; /* Hide scrollbar for Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.disable-scrollbars::-webkit-scrollbar {
+    background: transparent; /* Chrome/Safari/Webkit */
+    width: 0px;
+}
+
+.disable-scrollbars {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+
+
+#view-product-box-grid {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  width: 1000px;
+  height: 100vh;
+  margin-top: 50px;
+  overflow: hidden;
+}
+
+#select-product-size {
+  width: 350px;
+  min-height: 80px;
+  height: auto;
+  float: left;
+  margin-left: 50px;
+}
+
+.preview-iamges {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.preview-iamges:hover {
+  width: 98%;
+  height: 98px;
+}
+
+#des {
+  width: 350px;
+  min-height: 250px;
+  margin-top: 20px;
+  font-size: 18px;
+  white-space: pre-line;
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  overflow: hidden;
+  text-overflow: ellipsis; 
+}

@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans:400,400i,700,700i&subset=greek-ext');
+#register-frame {
+  width: 400px;
+  height: 380px;
+  border: 1px solid black;
+  margin-top: 50px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+html,
+body {
+  width: 100%;
+}
+
+
+.button{
+	color:#1d1b1b;
+	background-color:#e74c3c;
+	outline: none;
+    border: 0;
+    color: #fff;
+	padding:10px 20px;
+	text-transform:uppercase;
+	margin-top:50px;
+	border-radius:2px;
+	cursor:pointer;
+	position:relative;
+}
+.register-errors {
+  position: absolute;
+  width: 95%;
+  margin-left: 5px;
+}
+.cancel-alert {
+  position: absolute;
+  right: 5px;
+  top: 45%;
+  cursor: pointer;
+}
+.cancel-alert:hover {
+  color: white;
+}
+
+.input-container {
+  width: 95%;
+  margin-top: 10px;
+  outline-width: 0;
+  border: 1px solid gray;
+  font-size: 18px;
+}
+.input-container::hover {
+  border: 1px solid black;
+}
+
+.tracking-in-expand {
+  margin-top: 10px;
+  user-select: none;
+  font-size: 18px;
+  font-weight: lighter;
+  -webkit-animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.61, 0.355, 1)
+    both;
+  animation: tracking-in-expand 0.7s cubic-bezier(0.215, 0.61, 0.355, 1) both;
+}
+
+@-webkit-keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes tracking-in-expand {
+  0% {
+    letter-spacing: -0.5em;
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
