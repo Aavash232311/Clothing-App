@@ -38,7 +38,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 }
 
 let commonTarget = {
-    target: 'https://localhost:7082/',
+    target: 'https://localhost:7082/',  // your SERVER URL
     secure: false
 }
 
