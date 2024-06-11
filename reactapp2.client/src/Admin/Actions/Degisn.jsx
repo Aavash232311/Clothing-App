@@ -311,7 +311,6 @@ class AddSlotImages extends Component {
         formData.append(key, value);
       }
     });
-
     fetch(`/staff/updateSlotsHomePage/${this.state.tweak.id}`, {
       method: "PUT",
       credentials: "include",

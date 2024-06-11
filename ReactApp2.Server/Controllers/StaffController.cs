@@ -46,9 +46,12 @@ namespace ReactApp2.Server.Controllers
     {
         public ApplicationDbContext context;
         public UserManager<ApplicationUser> userManager;
-        public StaffController(ApplicationDbContext contexnt, UserManager<ApplicationUser> userManager) {
+        public Helper helper;
+        public StaffController(ApplicationDbContext contexnt, UserManager<ApplicationUser> userManager)
+        {
             this.context = contexnt;
             this.userManager = userManager;
+            this.helper = new Helper();
         }
         [Route("addHomePageCategory")]
         [HttpGet]
@@ -74,11 +77,11 @@ namespace ReactApp2.Server.Controllers
                         return new JsonResult(Ok());
                     }
                 }
-                return new JsonResult(BadRequest(new {error = "it should be less than five", code = 101}));
+                return new JsonResult(BadRequest(new { error = "it should be less than five", code = 101 }));
             }
             catch (Exception ex)
             {
-                return new JsonResult(BadRequest(new {error  = ex, code = 201}));
+                return new JsonResult(BadRequest(new { error = ex, code = 201 }));
             }
         }
 
@@ -122,7 +125,7 @@ namespace ReactApp2.Server.Controllers
         public async Task<IActionResult> DeleteSlots(int id)
         {
             var getItem = context.Featureds.Where(X => X.Id == id).FirstOrDefault();
-            if (getItem == null) {  return BadRequest(); }
+            if (getItem == null) { return BadRequest(); }
             // delete img
             var path = Path.Combine(Directory.GetCurrentDirectory(), getItem.Image);
             if (System.IO.File.Exists(path))
@@ -149,27 +152,28 @@ namespace ReactApp2.Server.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             var existingFeatured = await context.Featureds.FindAsync(id);
             if (existingFeatured == null)
             {
                 return NotFound();
             }
-
             if (featuredDto.Image != null)
             {
-                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "images", featuredDto.Image.FileName);
+                string imageName = this.helper.GenerateImageName(featuredDto.Image.FileName);
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "images", imageName);
                 // delete old path
                 var oldPath = Path.Combine(Directory.GetCurrentDirectory(), existingFeatured.Image);
                 if (System.IO.File.Exists(oldPath))
                 {
                     System.IO.File.Delete(oldPath);
                 }
+                if (!featuredDto.Image.ContentType.StartsWith("image/")) return new JsonResult(BadRequest(new {message = "unsupported media :()"}));
                 using (var stream = new FileStream(imagePath, FileMode.Create))
                 {
                     await featuredDto.Image.CopyToAsync(stream);
+                    existingFeatured.Image = Path.Combine("images", imageName);
                 }
-                existingFeatured.Image = Path.Combine("images", featuredDto.Image.FileName);
+
             }
 
             existingFeatured.Name = featuredDto.Name;
@@ -191,7 +195,7 @@ namespace ReactApp2.Server.Controllers
             var images = productSearlized.image;
             List<String> SavedImages = new List<String>();
             // here there are n number of images (since fancy dyanamic form is made)
-            foreach (var  img in images)
+            foreach (var img in images)
             {
                 var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "images", img.FileName);
                 var contentType = img.ContentType;
@@ -283,9 +287,10 @@ namespace ReactApp2.Server.Controllers
                     return new JsonResult(Ok(getTheme));
                 }
                 return new JsonResult(Ok("the id is incorrect"));
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                return new JsonResult(BadRequest(new {message = ex.Message}));
+                return new JsonResult(BadRequest(new { message = ex.Message }));
             }
         }
     }
