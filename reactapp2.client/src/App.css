@@ -1,6 +1,6 @@
 ﻿.grid-containor-home-page {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(285px, 1fr));
   padding: 15px;
   width: 100%;
   height: 500px;
