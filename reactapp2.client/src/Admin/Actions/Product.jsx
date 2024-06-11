@@ -142,7 +142,6 @@ class ProductForm extends Component {
       }),
       () => {}
     );
-    ev.target.reset();
   }
   addCategory(obj) {
     const copy = [...this.state.addedCategory];

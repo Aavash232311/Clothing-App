@@ -34,7 +34,7 @@ namespace ReactApp2.Server.Controllers
         public decimal Discount { get; set; }
         public string Brand { get; set; } = string.Empty;
         public List<String> AvalibleSize { get; set; } = new List<String>();
-        public string? addedCategory { get; set; }
+        public List<String>? addedCategory { get; set; }
         public string Description { get; set; } = string.Empty;
         public IFormFile[]? image { get; set; }
         public string gender { get; set; } = string.Empty;
@@ -208,8 +208,7 @@ namespace ReactApp2.Server.Controllers
                 // images folder in the server is all the public images
                 SavedImages.Add(Path.Combine("images", img.FileName));
             }
-            if (productSearlized.addedCategory == null || productSearlized.addedCategory.Split(",").Length > 0)
-            {
+            if (productSearlized.addedCategory == null) {
                 return new JsonResult(BadRequest("Category cannot be null"));
             }
             var product = new Product
@@ -220,7 +219,7 @@ namespace ReactApp2.Server.Controllers
                 Brand = productSearlized.Brand,
                 AvalibleSize = productSearlized.AvalibleSize,
                 Images = SavedImages,
-                Category = productSearlized.addedCategory.Split(",").ToList(),
+                Category = productSearlized.addedCategory,
                 Description = productSearlized.Description,
             };
             context.Products.Add(product);
