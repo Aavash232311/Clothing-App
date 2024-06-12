@@ -1,4 +1,4 @@
-<<<<<<<
+
 RUNNING PROJECT
 =======
 ON CLIENT SIDE:- npm install
