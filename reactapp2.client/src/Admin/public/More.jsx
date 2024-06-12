@@ -297,7 +297,7 @@ class More extends Component {
                                       }}
                                     />
                                   }
-                                  label="low to high"
+                                   label="low to high"
                                 />
                                 <FormControlLabel
                                   control={
