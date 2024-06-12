@@ -1,7 +1,7 @@
 
 RUNNING PROJECT
 =======
-ON CLIENT SIDE:- npm install
+ON CLIENT SIDE:- npm install "on client directory"
 
 ON SERVER :-
 install from csproj
