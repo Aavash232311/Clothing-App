@@ -20,10 +20,9 @@ class Items extends Component {
         <div className="container-product-options">
           {this.props.products.value.map((i, j) => {
             return (
-              <div
-                className="item-options"
-                key={Math.random(0, 1000) + i.id}
-              ></div>
+              <div className="item-options" key={Math.random(0, 1000) + i.id}>
+                {i.name}
+              </div>
             );
           })}
         </div>
@@ -42,13 +41,20 @@ class More extends Component {
       category: null,
       id: this.searchParams.get("vwe"),
       slowFilter: true,
-      gender: false,
       sales: false,
       price: false,
       recentlyAdded: false,
+      male: false,
+      female: false,
+      all: true,
+      lowToHigh: false,
+      highToLow: false,
+      priceAll: false,
+      recent: false
     };
     this.fetchInitialData = this.fetchInitialData.bind(this);
     this.setDropDown = this.setDropDown.bind(this);
+    this.filterByGender = this.filterByGender.bind(this);
   }
 
   fetchInitialData() {
@@ -103,6 +109,11 @@ class More extends Component {
     this.setState({ [value]: true });
   }
 
+  filterByGender(ev, name) {
+    const { checked } = ev.target;
+    this.setState({ [name]: checked }, () => {});
+  }
+
   render() {
     return (
       <div id="category-page-frame">
@@ -125,7 +136,7 @@ class More extends Component {
                       grid.style.gridTemplateColumns = "100%";
                       this.setState({ slowFilter: false });
                     } else {
-                      grid.style.gridTemplateColumns = "10% 90%";
+                      grid.style.gridTemplateColumns = "10% 100%";
                       this.setState({ slowFilter: true });
                     }
                   }}
@@ -184,19 +195,34 @@ class More extends Component {
                             <div className="options-dropdown">
                               <FormGroup>
                                 <FormControlLabel
-                                  control={<Checkbox />}
+                                  control={
+                                    <Checkbox
+                                      onChange={(ev) => {
+                                        this.filterByGender(ev, "male");
+                                      }}
+                                    />
+                                  }
                                   label="male"
                                 />
                                 <FormControlLabel
-                                  control={<Checkbox />}
+                                  control={
+                                    <Checkbox
+                                      onChange={(ev) => {
+                                        this.filterByGender(ev, "female");
+                                      }}
+                                    />
+                                  }
                                   label="female"
                                 />
                                 <FormControlLabel
-                                  control={<Checkbox />}
-                                  label="unisex"
-                                />
-                                <FormControlLabel
-                                  control={<Checkbox defaultChecked />}
+                                  control={
+                                    <Checkbox
+                                      onChange={(ev) => {
+                                        this.filterByGender(ev, "all");
+                                      }}
+                                    />
+                                  }
+                                  checked
                                   label="all"
                                 />
                               </FormGroup>
@@ -227,7 +253,13 @@ class More extends Component {
                             <div className="options-dropdown">
                               <FormGroup>
                                 <FormControlLabel
-                                  control={<Checkbox />}
+                                  control={
+                                    <Checkbox
+                                      onChange={(ev) => {
+                                        this.filterByGender(ev, "sales");
+                                      }}
+                                    />
+                                  }
                                   label="Sales"
                                 />
                               </FormGroup>
@@ -258,15 +290,34 @@ class More extends Component {
                             <div className="options-dropdown">
                               <FormGroup>
                                 <FormControlLabel
-                                  control={<Checkbox />}
+                                  control={
+                                    <Checkbox
+                                      onChange={(ev) => {
+                                        this.filterByGender(ev, "lowToHigh");
+                                      }}
+                                    />
+                                  }
                                   label="low to high"
                                 />
                                 <FormControlLabel
-                                  control={<Checkbox />}
+                                  control={
+                                    <Checkbox
+                                      onChange={(ev) => {
+                                        this.filterByGender(ev, "highToLow");
+                                      }}
+                                    />
+                                  }
                                   label="High to low"
                                 />
                                 <FormControlLabel
-                                  control={<Checkbox />}
+                                  control={
+                                    <Checkbox
+                                      onChange={(ev) => {
+                                        this.filterByGender(ev, "priceAll");
+                                      }}
+                                      checked
+                                    />
+                                  }
                                   label="all"
                                 />
                               </FormGroup>
@@ -292,12 +343,18 @@ class More extends Component {
                             {this.state.recentlyAdded === true ? (
                               <>
                                 <div className="options-dropdown">
-                                <FormGroup>
-                                <FormControlLabel
-                                  control={<Checkbox />}
-                                  label="recent"
-                                />
-                              </FormGroup>
+                                  <FormGroup>
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          onChange={(ev) => {
+                                            this.filterByGender(ev, "recent");
+                                          }}
+                                        />
+                                      }
+                                      label="recent"
+                                    />
+                                  </FormGroup>
                                 </div>
                               </>
                             ) : null}
