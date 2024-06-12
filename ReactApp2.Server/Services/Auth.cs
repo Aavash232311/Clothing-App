@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MailKit.Security;
@@ -46,7 +46,7 @@ namespace ReactApp2.Server.Services
 
                 using var smtp = new SmtpClient();
                 smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("aavash2005@gmail.com", ""); // your own app password and email or mail password
+                smtp.Authenticate("<email>", "<password>"); // your own app password and email or mail password
                 var actualUser = await base.FindByEmailAsync(getUserEmail);
                 if (actualUser != null)
                 {
