@@ -15,4 +15,4 @@ run necessary migrations
 in Services/Auth.cs use your own gmail password if you are dealing with sending email
 
 "dotnet watch run" to start the server
->>>>>>> be00ef3 (instruction)
+>>>>>>>
