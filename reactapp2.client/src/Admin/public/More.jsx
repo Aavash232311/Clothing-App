@@ -22,6 +22,10 @@ class Items extends Component {
             return (
               <div className="item-options" key={Math.random(0, 1000) + i.id}>
                 {i.name}
+                <br />
+                {i.price}
+                <br />
+                {i.gender}
               </div>
             );
           })}
@@ -44,17 +48,17 @@ class More extends Component {
       sales: false,
       price: false,
       recentlyAdded: false,
-      male: false,
-      female: false,
-      all: true,
+      Male: false,
+      Female: false,
       lowToHigh: false,
       highToLow: false,
-      priceAll: false,
-      recent: false
+      recent: false,
+      orginalProduct: null,
     };
-    this.fetchInitialData = this.fetchInitialData.bind(this);
     this.setDropDown = this.setDropDown.bind(this);
-    this.filterByGender = this.filterByGender.bind(this);
+    this.SortByGender = this.SortByGender.bind(this);
+    this.SortByPrice = this.SortByPrice.bind(this);
+    this.getIterableDataProductRender = this.getIterableDataProductRender.bind(this);
   }
 
   fetchInitialData() {
@@ -72,7 +76,7 @@ class More extends Component {
       .then((response) => {
         const { statusCode, value } = response;
         if (statusCode === 200) {
-          this.setState({ products: value });
+          this.setState({ products: value, orginalProduct: value });
         }
       });
   }
@@ -108,10 +112,85 @@ class More extends Component {
     }
     this.setState({ [value]: true });
   }
+  bubbleSort(arr, cd) {
+    for (let i = 0; i < arr.length - 1; i++) {
+      for (let j = 0; j < arr.length - i - 1; j++) {
+        if (arr[j].price > arr[j + 1].price) {
+          const temp = arr[j];
+          arr[j] = arr[j + 1];
+          arr[j + 1] = temp;
+        }
+      }
+    }
+    if (cd === "-ve") {
+      let temp = [];
+      for (let i = arr.length - 1; i >= 0; i--) {
+        temp.push(arr[i]);
+      }
+      return temp;
+    }
+    return arr;
+  }
 
-  filterByGender(ev, name) {
+  SortByPrice(price) {
+    let {PAGE, ORIGIN, FILTER_PRODUCT} = this.getIterableDataProductRender();
+    if (price === "low to high") {
+      FILTER_PRODUCT = this.bubbleSort(FILTER_PRODUCT, "+ve"); // because we might want to filter among other selected category
+      this.setState({lowToHigh: true});
+    }else{
+      this.setState({highToLow: true});
+      FILTER_PRODUCT = this.bubbleSort(FILTER_PRODUCT, "-ve");
+    }
+    // if both are true or both are false
+    const checkForBothTrue = this.antiSortVoid("lowToHigh", "highToLow");
+
+    this.setState({ products: { value: FILTER_PRODUCT, page: PAGE } });
+  }
+
+  getIterableDataProductRender() {
+    let PAGE = this.state["orginalProduct"]["page"];
+    let ORIGIN = this.state["orginalProduct"]["value"];
+    let FILTER_PRODUCT = [...this.state["orginalProduct"]["value"]];
+    return {
+      PAGE: PAGE,
+      ORIGIN: ORIGIN,
+      FILTER_PRODUCT: FILTER_PRODUCT
+    }
+  }
+
+  antiSortVoid(c1, c2) {
+    if (
+      (this.state[c1] === true && this.state[c2] === true) ||
+      (this.state[c1] === false && this.state[c2] === false)
+    ) {
+      return false
+    }
+    return true
+  }
+
+  SortByGender(ev, gender) {
     const { checked } = ev.target;
-    this.setState({ [name]: checked }, () => {});
+    let {PAGE, ORIGIN, FILTER_PRODUCT} = this.getIterableDataProductRender();
+    this.setState({ [gender]: checked }, () => {
+      let selectedGender = gender;
+      let sortByGender = true;
+
+      if (checked === false) {
+        // if unchecked
+        // we have to revert the sorting but keep in things which are checked
+        if (this.state.Female === true) {
+          selectedGender = "Female";
+        } else if (this.state.Male === true) {
+          selectedGender = "Male";
+        }
+        sortByGender = this.antiSortVoid("Male", "Female");
+      }
+      sortByGender = this.antiSortVoid("Male", "Female");
+      if (sortByGender) {
+        FILTER_PRODUCT = ORIGIN.filter((x) => x.gender === selectedGender);
+      }
+      this.setState({ products: { value: FILTER_PRODUCT, page: PAGE } });
+    });
   }
 
   render() {
@@ -197,8 +276,8 @@ class More extends Component {
                                 <FormControlLabel
                                   control={
                                     <Checkbox
-                                      onChange={(ev) => {
-                                        this.filterByGender(ev, "male");
+                                      onClick={(ev) => {
+                                        this.SortByGender(ev, "Male");
                                       }}
                                     />
                                   }
@@ -207,23 +286,12 @@ class More extends Component {
                                 <FormControlLabel
                                   control={
                                     <Checkbox
-                                      onChange={(ev) => {
-                                        this.filterByGender(ev, "female");
+                                      onClick={(ev) => {
+                                        this.SortByGender(ev, "Female");
                                       }}
                                     />
                                   }
                                   label="female"
-                                />
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      onChange={(ev) => {
-                                        this.filterByGender(ev, "all");
-                                      }}
-                                    />
-                                  }
-                                  checked
-                                  label="all"
                                 />
                               </FormGroup>
                             </div>
@@ -253,13 +321,7 @@ class More extends Component {
                             <div className="options-dropdown">
                               <FormGroup>
                                 <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      onChange={(ev) => {
-                                        this.filterByGender(ev, "sales");
-                                      }}
-                                    />
-                                  }
+                                  control={<Checkbox />}
                                   label="Sales"
                                 />
                               </FormGroup>
@@ -292,33 +354,22 @@ class More extends Component {
                                 <FormControlLabel
                                   control={
                                     <Checkbox
-                                      onChange={(ev) => {
-                                        this.filterByGender(ev, "lowToHigh");
+                                      onClick={(ev) => {
+                                        this.SortByPrice("low to high");
                                       }}
                                     />
                                   }
-                                   label="low to high"
+                                  label="low to high"
                                 />
                                 <FormControlLabel
                                   control={
                                     <Checkbox
-                                      onChange={(ev) => {
-                                        this.filterByGender(ev, "highToLow");
+                                      onClick={(ev) => {
+                                        this.SortByPrice("High to low");
                                       }}
                                     />
                                   }
                                   label="High to low"
-                                />
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      onChange={(ev) => {
-                                        this.filterByGender(ev, "priceAll");
-                                      }}
-                                      checked
-                                    />
-                                  }
-                                  label="all"
                                 />
                               </FormGroup>
                             </div>
@@ -345,13 +396,7 @@ class More extends Component {
                                 <div className="options-dropdown">
                                   <FormGroup>
                                     <FormControlLabel
-                                      control={
-                                        <Checkbox
-                                          onChange={(ev) => {
-                                            this.filterByGender(ev, "recent");
-                                          }}
-                                        />
-                                      }
+                                      control={<Checkbox />}
                                       label="recent"
                                     />
                                   </FormGroup>
