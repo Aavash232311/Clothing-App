@@ -4,7 +4,6 @@ import logo from "../static/images/logo.png";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import CheckIcon from '@mui/icons-material/Check';
-import GoogleIcon from '@mui/icons-material/Google';
 
 export default function SignUp() {
   const [formData, setFormData] = React.useState({

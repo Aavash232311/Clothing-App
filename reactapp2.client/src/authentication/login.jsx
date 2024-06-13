@@ -51,7 +51,9 @@ export default function Login() {
                 if (rsp !== true) {
                   setError("username or password incorrect");
                 } else {
-                  window.location.href = "/";
+                  setTimeout(() => {
+                    window.location.href = "/";
+                  }, 500);
                 }
               });
             }

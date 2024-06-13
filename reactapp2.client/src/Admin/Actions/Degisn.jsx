@@ -594,6 +594,7 @@ export default class Degisn extends Component {
       .then((rsp) => rsp.json())
       .then((response) => {
         const { value, statusCode } = response;
+        console.log(value);
         if (statusCode === 200) {
           const { result } = value;
           if (result != "") {

@@ -50,17 +50,19 @@ namespace ReactApp2.Server.Controllers
         }
         [Route("searchCategory")]
         [HttpGet]
-        public  IActionResult GetSearchedCategory(string query)
+        public IActionResult GetSearchedCategory(string query)
         {
-            if (query != null && query.Length > 2)
+            if (!string.IsNullOrEmpty(query) && query.Length > 2)
             {
-                var result = this.context.Categories.Include(c => c.Parent).Where(x => x.ProductCategory.Contains(query)).Take(10);
-                return new JsonResult(Ok(new { result = result }));
-            }else
-            {
-                return new JsonResult(Ok(new { result = "" }));
+                var results = this.context.Categories
+                    .Include(c => c.Parent)
+                    .Where(x => x.ProductCategory.ToLower().Contains(query.ToLower()))
+                    .Take(10);
+                return new JsonResult(Ok(new { result = results }));
             }
+            return new JsonResult(NotFound());
         }
+
         [Route("InitinalCategory")]
         [HttpGet]
         public IActionResult GetInitialCategory()
@@ -81,7 +83,8 @@ namespace ReactApp2.Server.Controllers
                     await context.SaveChangesAsync();
                 }
                 return new JsonResult(Ok());
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return new JsonResult(BadRequest(new { message = ex }));
             }
@@ -108,9 +111,10 @@ namespace ReactApp2.Server.Controllers
 
                 }
                 return new JsonResult(Ok());
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                return new JsonResult(BadRequest(new {message = ex}));
+                return new JsonResult(BadRequest(new { message = ex }));
             }
         }
     }
