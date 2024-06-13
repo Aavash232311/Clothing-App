@@ -6,6 +6,10 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 class Items extends Component {
   constructor(props) {
@@ -48,17 +52,16 @@ class More extends Component {
       sales: false,
       price: false,
       recentlyAdded: false,
-      Male: false,
-      Female: false,
-      lowToHigh: false,
-      highToLow: false,
+      priceOptions: "",
       recent: false,
       orginalProduct: null,
+      gender: false,
     };
     this.setDropDown = this.setDropDown.bind(this);
     this.SortByGender = this.SortByGender.bind(this);
     this.SortByPrice = this.SortByPrice.bind(this);
-    this.getIterableDataProductRender = this.getIterableDataProductRender.bind(this);
+    this.getIterableDataProductRender =
+      this.getIterableDataProductRender.bind(this);
   }
 
   fetchInitialData() {
@@ -102,10 +105,17 @@ class More extends Component {
           this.setState({ category: value });
         }
       });
-    this.fetchInitialData(); // Corrected method name
+    this.fetchInitialData(); 
   }
 
   setDropDown(value) {
+    // re-render all we don-t want the combied logic mess
+    const arr = ["sales", "price", "recentlyAdded", "gender"];
+    arr.map((i) => {
+      if (i !== value) {
+        this.setState({[i]: false});
+      }
+    })
     if (this.state[value] === true) {
       this.setState({ [value]: false });
       return;
@@ -132,18 +142,16 @@ class More extends Component {
     return arr;
   }
 
-  SortByPrice(price) {
-    let {PAGE, ORIGIN, FILTER_PRODUCT} = this.getIterableDataProductRender();
-    if (price === "low to high") {
+  SortByPrice(ev) {
+    const { value } = ev.target;
+    let { PAGE, ORIGIN, FILTER_PRODUCT } = this.getIterableDataProductRender();
+    this.setState({ priceOptions: value, SortByGender: "all" });
+    console.log(FILTER_PRODUCT);
+    if (value === "lowToHigh") {
       FILTER_PRODUCT = this.bubbleSort(FILTER_PRODUCT, "+ve"); // because we might want to filter among other selected category
-      this.setState({lowToHigh: true});
-    }else{
-      this.setState({highToLow: true});
+    } else if (value === "highToLow") {
       FILTER_PRODUCT = this.bubbleSort(FILTER_PRODUCT, "-ve");
     }
-    // if both are true or both are false
-    const checkForBothTrue = this.antiSortVoid("lowToHigh", "highToLow");
-
     this.setState({ products: { value: FILTER_PRODUCT, page: PAGE } });
   }
 
@@ -154,43 +162,18 @@ class More extends Component {
     return {
       PAGE: PAGE,
       ORIGIN: ORIGIN,
-      FILTER_PRODUCT: FILTER_PRODUCT
-    }
+      FILTER_PRODUCT: FILTER_PRODUCT,
+    };
   }
-
-  antiSortVoid(c1, c2) {
-    if (
-      (this.state[c1] === true && this.state[c2] === true) ||
-      (this.state[c1] === false && this.state[c2] === false)
-    ) {
-      return false
+  SortByGender(ev) {
+    const { value } = ev.target;
+    let { PAGE, ORIGIN, FILTER_PRODUCT } = this.getIterableDataProductRender();
+    if (value === "all") {
+      FILTER_PRODUCT = FILTER_PRODUCT.filter((x) => true);
+    }else{
+      FILTER_PRODUCT = FILTER_PRODUCT.filter((x) => x.gender === value);
     }
-    return true
-  }
-
-  SortByGender(ev, gender) {
-    const { checked } = ev.target;
-    let {PAGE, ORIGIN, FILTER_PRODUCT} = this.getIterableDataProductRender();
-    this.setState({ [gender]: checked }, () => {
-      let selectedGender = gender;
-      let sortByGender = true;
-
-      if (checked === false) {
-        // if unchecked
-        // we have to revert the sorting but keep in things which are checked
-        if (this.state.Female === true) {
-          selectedGender = "Female";
-        } else if (this.state.Male === true) {
-          selectedGender = "Male";
-        }
-        sortByGender = this.antiSortVoid("Male", "Female");
-      }
-      sortByGender = this.antiSortVoid("Male", "Female");
-      if (sortByGender) {
-        FILTER_PRODUCT = ORIGIN.filter((x) => x.gender === selectedGender);
-      }
-      this.setState({ products: { value: FILTER_PRODUCT, page: PAGE } });
-    });
+    this.setState({ products: { value: FILTER_PRODUCT, page: PAGE } });
   }
 
   render() {
@@ -272,28 +255,19 @@ class More extends Component {
                         {this.state.gender === true ? (
                           <>
                             <div className="options-dropdown">
-                              <FormGroup>
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      onClick={(ev) => {
-                                        this.SortByGender(ev, "Male");
-                                      }}
-                                    />
-                                  }
-                                  label="male"
-                                />
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      onClick={(ev) => {
-                                        this.SortByGender(ev, "Female");
-                                      }}
-                                    />
-                                  }
-                                  label="female"
-                                />
-                              </FormGroup>
+                              <FormControl style={{ width: "90%" }}>
+                                <Select
+                                  labelId="demo-simple-select-label"
+                                  id="sel-gender"
+                                  label="Gender"
+                                  onChange={this.SortByGender}
+                                  defaultValue={"all"}
+                                >
+                                  <MenuItem value="Male">male</MenuItem>
+                                  <MenuItem value="Female">female</MenuItem>
+                                  <MenuItem value="all">unisex</MenuItem>
+                                </Select>
+                              </FormControl>
                             </div>
                           </>
                         ) : null}
@@ -349,29 +323,25 @@ class More extends Component {
                         <hr style={{ visibility: "hidden", height: "50px" }} />
                         {this.state.price === true ? (
                           <>
+                            <br />
                             <div className="options-dropdown">
-                              <FormGroup>
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      onClick={(ev) => {
-                                        this.SortByPrice("low to high");
-                                      }}
-                                    />
-                                  }
-                                  label="low to high"
-                                />
-                                <FormControlLabel
-                                  control={
-                                    <Checkbox
-                                      onClick={(ev) => {
-                                        this.SortByPrice("High to low");
-                                      }}
-                                    />
-                                  }
-                                  label="High to low"
-                                />
-                              </FormGroup>
+                              <FormControl style={{ width: "90%" }}>
+                                <Select
+                                  labelId="demo-simple-select-label"
+                                  id="sel-price"
+                                  label="Price"
+                                  onChange={this.SortByPrice}
+                                  defaultValue={"all"}
+                                >
+                                  <MenuItem value="highToLow">
+                                    high to low
+                                  </MenuItem>
+                                  <MenuItem value="lowToHigh">
+                                    low to high
+                                  </MenuItem>
+                                  <MenuItem value="all">all</MenuItem>
+                                </Select>
+                              </FormControl>
                             </div>
                           </>
                         ) : null}
