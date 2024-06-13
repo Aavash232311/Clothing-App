@@ -4,6 +4,7 @@ import logo from "../static/images/logo.png";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import CheckIcon from '@mui/icons-material/Check';
+import GoogleIcon from '@mui/icons-material/Google';
 
 export default function SignUp() {
   const [formData, setFormData] = React.useState({
@@ -60,7 +61,7 @@ export default function SignUp() {
       <center>
         <div id="register-frame">
           <div className="register-logo-placer">
-            <img className="register-logo" height="50" width="100%" src={logo}></img>
+            <img style={{ borderRadius: "5px " }} className="register-logo" height="50" width="100%" src={logo}></img>
           </div>
           <hr />
           {success === false ? (
@@ -82,7 +83,7 @@ export default function SignUp() {
                     handleChange(ev);
                   }}
                   placeholder="email"
-                  className="input-container"
+                  className="input-container register-input"
                   type="text"
                   required={true}
                   autoComplete="off"
@@ -94,7 +95,7 @@ export default function SignUp() {
                   }}
                   placeholder="password"
                   type="password"
-                  className="input-container"
+                  className="input-container register-input"
                   required={true}
                 />
                 <input
@@ -104,11 +105,11 @@ export default function SignUp() {
                   }}
                   placeholder="conform password"
                   type="password"
-                  className="input-container"
+                  className="input-container register-input"
                   required={true}
                 />
+                <button type="submit" className="button-89 input-container" id="css-button" >register</button>
 
-                <hr style={{ visibility: "hidden" }}></hr>
                 {error != null ? (
                   <Stack>
                     {error.map((i, j) => {
@@ -132,9 +133,7 @@ export default function SignUp() {
                   </Stack>
                 ) : null}
                 <hr style={{ visibility: "hidden", height: "25px" }}></hr>
-                <button type="submit" className="button">
-                  REGISTER
-                </button>
+
               </form>
             </>
           ) : (
@@ -144,7 +143,7 @@ export default function SignUp() {
               </Alert>
               <Alert severity="success">
                 Thank you for choosing us.. -Engineering team and developers
-                              </Alert>
+              </Alert>
               <a href={`/email?mail=${formData.email}`}>enter code..</a>
             </>
           )}
