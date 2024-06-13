@@ -65,7 +65,6 @@ class AddProcutToTheme extends Component {
         const { statusCode, value } = response;
         if (statusCode === 200) {
           const { products } = value;
-          console.log(products);
           this.setState({ productArray: products });
         }
       });
