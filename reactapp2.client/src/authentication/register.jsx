@@ -109,7 +109,6 @@ export default function SignUp() {
                   required={true}
                 />
                 <button type="submit" className="button-89 input-container" id="css-button" >register</button>
-
                 {error != null ? (
                   <Stack>
                     {error.map((i, j) => {
