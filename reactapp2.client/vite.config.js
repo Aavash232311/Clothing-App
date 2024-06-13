@@ -30,7 +30,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
         '--export-path',
         certFilePath,
         '--format',
-        'Pem', 
+        'Pem',
         '--no-password',
     ], { stdio: 'inherit', }).status) {
         throw new Error("Could not create certificate.");
@@ -38,17 +38,17 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
 }
 
 let commonTarget = {
-    target: 'https://localhost:7082/',  // your SERVER URL
+    target: 'http://localhost:5265',  // your SERVER URL
     secure: false
 }
 
 export default defineConfig({
     plugins: [plugin()],
-      optimizeDeps: {
+    optimizeDeps: {
         esbuildOptions: {
-          loader: {
-            '.js': 'jsx',
-          },
+            loader: {
+                '.js': 'jsx',
+            },
         },
     },
     resolve: {

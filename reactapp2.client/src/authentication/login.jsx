@@ -10,9 +10,10 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import background from "../static/images/login_theme.png";
-import Alert from "@mui/material/Alert";
 import "../static/login.css";
 import AuthContext, { AuthProvider } from "./auth";
+import Stack from '@mui/material/Stack';
+
 function Copyright(props) {
   return (
     <Typography

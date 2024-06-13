@@ -1,1 +1,2 @@
 D:\Math\ConsoleApp1\ReactApp2\reactapp2.client\obj\Debug\reactapp2.client.esproj.CoreCompileInputs.cache
+C:\Users\pradi\OneDrive\Desktop\VersionControlTestProj\Clothing-App\reactapp2.client\obj\Debug\reactapp2.client.esproj.CoreCompileInputs.cache

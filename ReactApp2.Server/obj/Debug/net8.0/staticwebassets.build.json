@@ -1,20 +1,20 @@
 {
   "Version": 1,
-  "Hash": "Mqw2vVt+1WVxY1Sz00cA4LIkVYrIQAQ6KEsHuWklMJc=",
+  "Hash": "qRKGMCQ/rP4Yv5BgozziLILVjoQfdcyD0NG1y8mc/5E=",
   "Source": "ReactApp2.Server",
   "BasePath": "_content/ReactApp2.Server",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [
     {
-      "Identity": "D:\\Math\\ConsoleApp1\\ReactApp2\\reactapp2.client\\reactapp2.client.esproj",
+      "Identity": "C:\\Users\\pradi\\OneDrive\\Desktop\\VersionControlTestProj\\Clothing-App\\reactapp2.client\\reactapp2.client.esproj",
       "Version": 2,
       "Source": "reactapp2.client",
       "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
-      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalPublishProperties": "",
       "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained",
       "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
-      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
+      "AdditionalBuildProperties": "",
       "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
     }
   ],

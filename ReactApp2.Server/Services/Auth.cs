@@ -46,7 +46,7 @@ namespace ReactApp2.Server.Services
 
                 using var smtp = new SmtpClient();
                 smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("<email>", "<password>"); // your own app password and email or mail password
+                smtp.Authenticate("aavash2005@gmail.com", "biplzzijfnzywptb"); // your own app password and email or mail password
                 var actualUser = await base.FindByEmailAsync(getUserEmail);
                 if (actualUser != null)
                 {

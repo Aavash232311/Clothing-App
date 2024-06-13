@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Math\\ConsoleApp1\\ReactApp2\\ReactApp2.Server\\ReactApp2.Server.csproj": {}
+    "C:\\Users\\pradi\\OneDrive\\Desktop\\VersionControlTestProj\\Clothing-App\\ReactApp2.Server\\ReactApp2.Server.csproj": {}
   },
   "projects": {
-    "D:\\Math\\ConsoleApp1\\ReactApp2\\ReactApp2.Server\\ReactApp2.Server.csproj": {
+    "C:\\Users\\pradi\\OneDrive\\Desktop\\VersionControlTestProj\\Clothing-App\\ReactApp2.Server\\ReactApp2.Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Math\\ConsoleApp1\\ReactApp2\\ReactApp2.Server\\ReactApp2.Server.csproj",
+        "projectUniqueName": "C:\\Users\\pradi\\OneDrive\\Desktop\\VersionControlTestProj\\Clothing-App\\ReactApp2.Server\\ReactApp2.Server.csproj",
         "projectName": "ReactApp2.Server",
-        "projectPath": "D:\\Math\\ConsoleApp1\\ReactApp2\\ReactApp2.Server\\ReactApp2.Server.csproj",
-        "packagesPath": "C:\\Users\\aavas\\.nuget\\packages\\",
-        "outputPath": "D:\\Math\\ConsoleApp1\\ReactApp2\\ReactApp2.Server\\obj\\",
+        "projectPath": "C:\\Users\\pradi\\OneDrive\\Desktop\\VersionControlTestProj\\Clothing-App\\ReactApp2.Server\\ReactApp2.Server.csproj",
+        "packagesPath": "C:\\Users\\pradi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\pradi\\OneDrive\\Desktop\\VersionControlTestProj\\Clothing-App\\ReactApp2.Server\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\aavas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\pradi\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -34,6 +34,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -114,7 +119,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
