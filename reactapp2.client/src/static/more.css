@@ -2,6 +2,7 @@
   display: grid;
   grid-template-columns: repeat(3, 430px);
   grid-gap: 10px;
+  list-style: none;
 }
 
 .item-options {
@@ -50,7 +51,7 @@
 }
 #frame-div {
   display: grid;
-  grid-template-columns: 13% 90%;
+  grid-template-columns: 15% 82%;
   width: 100%;
 }
 #products-div {
