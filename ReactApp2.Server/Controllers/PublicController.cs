@@ -39,11 +39,13 @@ namespace ReactApp2.Server.Controllers
             }
             try
             {
+                Random random = new Random();
                 Guid getId = Guid.Parse(id); // we need to if the id is valid guid or not despite we are comparing from string
                                              // skip record(x) = page size * (page number - 1)
                                              // example x =    5 * (2 - 1) = 5 (skpils the next 5 record which has already been displayed in previous respose)
                                              // total number of page(n) = total items / items per page (round up to nearest number)
-                var result = context.Products.Where(x => x.Category.Contains(id));
+                var result = context.Products.Where(x => x.Category.Contains(id)).ToList();
+                result = result.OrderBy(p => random.Next()).ToList();
                 int numberOfRecords = result.Count();
                 var take = result.Skip(18 * (page - 1)).Take(18).ToList();
                 decimal n = numberOfRecords / 18;
