@@ -1,8 +1,12 @@
 .container-product-options {
   display: grid;
-  grid-template-columns: repeat(3, 430px);
-  grid-gap: 10px;
+  grid-template-columns: repeat(3, 400px);
+  grid-gap: 12px;
   list-style: none;
+}
+
+.product-cart-label-name {
+  margin-left: 5px;
 }
 
 .item-options {
