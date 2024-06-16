@@ -21,16 +21,20 @@ class Items extends Component {
 
   render() {
     return (
-      <>
-        <div className="container-product-options">
+      <div style={{ overflow: "auto" }}>
+        <div id="container-product-options">
           {this.props.products.value.map((i, j) => {
             let l = i;
             return (
-              <div key={Math.random(0, 1000) + i.id}>
+              <div className="product-height" key={Math.random(0, 1000) + i.id}>
                 <NavItem>
                   <NavLink tag={Link} to={`/view?key=${l.id}`}>
                     <div className="item-options">
-                      <img width="95%" height="350" src={l.images[0]}></img>
+                      <img
+                        width="95%"
+                        className="product-image"
+                        src={l.images[0]}
+                      ></img>
                       <hr style={{ visibility: "hidden" }}></hr>
                       <div className="product-cart-label-name">{l.name}</div>
                       <hr style={{ visibility: "hidden" }}></hr>
@@ -44,7 +48,7 @@ class Items extends Component {
             );
           })}
         </div>
-      </>
+      </div>
     );
   }
 }
@@ -58,7 +62,7 @@ class More extends Component {
       products: null,
       category: null,
       id: this.searchParams.get("vwe"),
-      slowFilter: true,
+      slowFilter: window.innerWidth < 920 ? false : true,
       sales: false,
       price: false,
       recentlyAdded: false,
@@ -66,6 +70,7 @@ class More extends Component {
       recent: false,
       orginalProduct: null,
       gender: false,
+      showFilterIcons: false,
     };
     this.setDropDown = this.setDropDown.bind(this);
     this.SortByGender = this.SortByGender.bind(this);
@@ -73,6 +78,7 @@ class More extends Component {
     this.getIterableDataProductRender =
       this.getIterableDataProductRender.bind(this);
     this.sortByDate = this.sortByDate.bind(this);
+    this.FilterToggle = this.FilterToggle.bind(this);
   }
 
   fetchInitialData() {
@@ -89,7 +95,6 @@ class More extends Component {
       .then((r) => r.json())
       .then((response) => {
         const { statusCode, value } = response;
-        console.log(response);
         if (statusCode === 200) {
           this.setState({ products: value, orginalProduct: value });
         }
@@ -168,7 +173,6 @@ class More extends Component {
     const { value } = ev.target;
     let { PAGE, ORIGIN, FILTER_PRODUCT } = this.getIterableDataProductRender();
     this.setState({ priceOptions: value, SortByGender: "all" });
-    console.log(FILTER_PRODUCT);
     if (value === "lowToHigh") {
       FILTER_PRODUCT = this.bubbleSort(ORIGIN, "+ve", "price"); // because we might want to filter among other selected category
     } else if (value === "highToLow") {
@@ -211,6 +215,15 @@ class More extends Component {
     this.setState({ products: { value: sortOnTheBasisOfDate, page: PAGE } });
   }
 
+  FilterToggle() {
+    const bool = this.state.slowFilter;
+    if (bool === true) {
+      this.setState({ slowFilter: false });
+    } else {
+      this.setState({ slowFilter: true });
+    }
+  }
+
   render() {
     return (
       <div id="category-page-frame">
@@ -227,34 +240,29 @@ class More extends Component {
                   {this.state.category.productCategory}
                 </h3>
                 <div
-                  onClick={() => {
-                    var grid = document.querySelector("#frame-div");
-                    if (this.state.slowFilter === true) {
-                      grid.style.gridTemplateColumns = "100%";
-                      this.setState({ slowFilter: false });
-                    } else {
-                      grid.style.gridTemplateColumns = "15% 82%";
-                      this.setState({ slowFilter: true });
-                    }
-                  }}
-                  id="filter-options"
-                  className="classic-label"
+                  onClick={this.FilterToggle}
+                  style={{ cursor: "pointer", userSelect: "none" }}
+                  id="filter-options-icons"
                 >
-                  Hide filter{" "}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    className="bi bi-filter-right"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5m0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5m0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5" />
-                  </svg>
+                  <div id="filter-icon-right">
+                    <div id="filter-icon">
+                      Filter
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        className="bi bi-filter-right"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M14 10.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 .5-.5m0-3a.5.5 0 0 0-.5-.5h-7a.5.5 0 0 0 0 1h7a.5.5 0 0 0 .5-.5m0-3a.5.5 0 0 0-.5-.5h-11a.5.5 0 0 0 0 1h11a.5.5 0 0 0 .5-.5" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div id="frame-div">
-                <div>
+                <div id="filter-frame-p">
                   {this.state.slowFilter === true ? (
                     <>
                       <div id="filter-div">

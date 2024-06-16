@@ -1,3 +1,5 @@
 .vs/
 ./ReactApp2.Server/images
 ./ReactApp2.Server/Notes
+./ReactApp2.Server/bin
+./ReactApp2.Server/obj
