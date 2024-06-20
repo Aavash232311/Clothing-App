@@ -128,7 +128,7 @@ function Nav() {
                     <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0z" />
                   </svg>
                 </div>
-                <div id="computer-nav">
+                <div id="computer-nav" style={{zIndex: "99999999999"}}>
                   <center>
                     <div id="bottom-category">
                       {category !== null ? (

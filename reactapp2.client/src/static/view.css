@@ -167,6 +167,11 @@
     margin-left: 0;
     margin-left: 5px;
   }
+  #select-product-size, #des {
+    width: 100%;
+    justify-content: left;
+    text-align: left;
+  }
   #view-product-box-grid {
     display: block;
     min-height: 1000px;
@@ -174,9 +179,16 @@
   }
   #image-orientation-frame {
     width: 100%;
-    display: block;
+    display: flex;
     height: auto;
     float: left;
+    flex-direction: column;
+  }
+  #image-slot-2{
+    order: 1;
+  }
+  #image-slot-1 {
+    order: 2;
   }
   .image-prv-grid {
     display: block;

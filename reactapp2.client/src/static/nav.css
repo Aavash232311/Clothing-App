@@ -24,6 +24,9 @@
     border-bottom: 1px solid rgb(152, 152, 152);
     width: 90%;
 }
+#computer-nav {
+    z-index: 9999;
+}
 @media screen and (max-width: 1129px) {
     #bottom-category {
         margin-left: 25%;

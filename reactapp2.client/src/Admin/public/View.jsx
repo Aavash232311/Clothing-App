@@ -44,7 +44,7 @@ class View extends Component {
               <div id="view-product-box-grid">
                 <div id="product-orientation-frame">
                   <div id="image-orientation-frame">
-                    <div className="image-prv-grid">
+                    <div className="image-prv-grid" id="image-slot-1">
                       {this.state.product.images.map((i, j) => {
                         return (
                           <div key={Math.random(0, i) + j}>
@@ -55,7 +55,7 @@ class View extends Component {
                         );
                       })}
                     </div>
-                    <div>
+                    <div id="image-slot-2">
                       <img
                         height="auto"
                         width="100%"
