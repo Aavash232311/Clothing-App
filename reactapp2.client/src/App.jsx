@@ -58,7 +58,7 @@ function App() {
                                   <div className="product-cart">
                                     <img
                                       width="100%"
-                                      height="350"
+                                      height="600"
                                       src={l.images[0]}
                                     ></img>
                                     <hr style={{ visibility: "hidden" }}></hr>

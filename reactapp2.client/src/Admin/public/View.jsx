@@ -39,17 +39,17 @@ class View extends Component {
       <div id="view-bg-frame">
         <Nav />
         {this.state.product != null ? (
-          <>
+          <div>
             <center>
               <div id="view-product-box-grid">
                 <div id="product-orientation-frame">
                   <div id="image-orientation-frame">
-                    <div>
+                    <div className="image-prv-grid">
                       {this.state.product.images.map((i, j) => {
                         return (
                           <div key={Math.random(0, i) + j}>
                             <div className="preview-iamges">
-                              <img onMouseOver={() => {this.previewImage(j)}} width="100%" height="auto" src={i}></img>
+                              <img className="move-iamges" onMouseOver={() => {this.previewImage(j)}} width="100%" height="auto" src={i}></img>
                             </div>
                           </div>
                         );
@@ -66,7 +66,7 @@ class View extends Component {
                 </div>
                 <div id="info-div-view-products">
                   <br />
-                  <center>
+                  <div id="product-info">
                     <div className="roboto-condensed-light view-product-label">
                       {this.state.product.name}
                     </div>
@@ -147,11 +147,11 @@ class View extends Component {
                       </div>{" "}
                       All purchases are subject to delivery fees (4–10) business days
                     </div>
-                  </center>
+                  </div>
                 </div>
               </div>
             </center>
-          </>
+          </div>
         ) : null}
       </div>
     );

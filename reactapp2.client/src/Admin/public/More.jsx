@@ -62,7 +62,7 @@ class More extends Component {
       products: null,
       category: null,
       id: this.searchParams.get("vwe"),
-      slowFilter: window.innerWidth < 920 ? false : true,
+      slowFilter: window.innerWidth <= 920 ? false : true,
       sales: false,
       price: false,
       recentlyAdded: false,
@@ -225,6 +225,11 @@ class More extends Component {
   }
 
   render() {
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 920) {
+        this.setState({slowFilter: true});
+      }
+    })
     return (
       <div id="category-page-frame">
         <Nav /> <br />
