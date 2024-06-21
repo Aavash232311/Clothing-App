@@ -8,10 +8,11 @@ import Login from "./authentication/login.jsx";
 import SignUp from "./authentication/signup.jsx";
 import AdminDashboard from "./Admin/Admin.jsx";
 import SignInSide from "./authentication/register.jsx";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
 import LoginCode from "./authentication/LoginCode.jsx";
 import View from "./Admin/public/View.jsx";
 import More from "./Admin/public/More.jsx";
+import { CartProvider } from "./Admin/public/cartContext.jsx";
 
 let router = [
   {
@@ -41,7 +42,7 @@ let router = [
   },
   {
     path: "/email",
-    element: (<LoginCode />),
+    element: <LoginCode />,
     allowedRoles: [],
   },
   {
@@ -53,7 +54,7 @@ let router = [
     path: "/in",
     element: <More />,
     allowedRoles: [],
-  }
+  },
 ];
 
 // (RBAC) FOR UI, API IS SECURE AND INDEPENDENT OF CLIENT SIDE
@@ -68,6 +69,8 @@ let fitered = router.filter((i) => {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={createBrowserRouter(fitered)} />
+    <CartProvider>
+      <RouterProvider router={createBrowserRouter(fitered)} />
+    </CartProvider>
   </React.StrictMode>
 );

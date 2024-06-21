@@ -39,7 +39,7 @@ function App() {
                 <div>
                   <NavItem>
                     <NavLink tag={Link} to={i.link}>
-                      <img height="auto" width="100%" src={i.image}></img>
+                      <img className="poster" height="auto" width="100%" src={i.image}></img>
                     </NavLink>
                   </NavItem>
                   <hr style={{ visibility: "hidden", height: "25px" }}></hr>
@@ -58,7 +58,7 @@ function App() {
                                   <div className="product-cart">
                                     <img
                                       width="100%"
-                                      height="600"
+                                      height="500"
                                       src={l.images[0]}
                                     ></img>
                                     <hr style={{ visibility: "hidden" }}></hr>

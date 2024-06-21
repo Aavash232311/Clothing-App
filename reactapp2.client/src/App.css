@@ -211,6 +211,17 @@ div {
 }
 
 @media screen and (max-width: 570px) {
+  .poster {
+    min-height: 250px;
+    height: auto;
+  }
+  .product-cart {
+    float: left;
+  }
+  .grid-containor-home-page {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(340px, 1fr));
+  }
   #register-frame {
     width: 100vw;
     position: relative;

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Nav from "../../Nav";
 import "../../static/view.css";
+import CartContext ,{ CartProvider } from "./cartContext";
 class View extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +25,6 @@ class View extends Component {
     })
       .then((rsp) => rsp.json())
       .then((response) => {
-        console.log(response);
         const { statusCode, value } = response;
         if (statusCode === 200) {
           this.setState({ product: value });
@@ -32,8 +32,10 @@ class View extends Component {
       });
   }
   previewImage(val) {
-    this.setState({image: val});
+    if (window.innerWidth <= 1020) return;
+    this.setState({ image: val });
   }
+  static contextType = CartContext;
   render() {
     return (
       <div id="view-bg-frame">
@@ -49,7 +51,15 @@ class View extends Component {
                         return (
                           <div key={Math.random(0, i) + j}>
                             <div className="preview-iamges">
-                              <img className="move-iamges" onMouseOver={() => {this.previewImage(j)}} width="100%" height="auto" src={i}></img>
+                              <img
+                                className="move-iamges"
+                                onMouseOver={() => {
+                                  this.previewImage(j);
+                                }}
+                                width="100%"
+                                height="auto"
+                                src={i}
+                              ></img>
                             </div>
                           </div>
                         );
@@ -72,7 +82,9 @@ class View extends Component {
                     </div>
                     <hr style={{ visibility: "hidden", height: "30px" }}></hr>
                     <div className="classic-label view-product-label">
-                      {this.state.product.gender === "male" ? "Men's" : "Women's"}
+                      {this.state.product.gender === "male"
+                        ? "Men's"
+                        : "Women's"}
                     </div>
                     <hr style={{ visibility: "hidden", height: "30px" }}></hr>
                     <div
@@ -87,44 +99,56 @@ class View extends Component {
                     </div>
                     <hr style={{ visibility: "hidden", height: "20px" }}></hr>
                     {this.state.product.avalibleSize[0] != null ? (
-                        <>
-                        
-                        {this.state.product.avalibleSize[0].split(",").length >
-                    0 ? (
                       <>
-                        <div className="classic-label view-product-label">
-                          Select Size
-                        </div>
-                        <hr
-                          style={{ visibility: "hidden", height: "20px" }}
-                        ></hr>
-                        <div
-                          id="select-product-size"
-                          className="grid-container-size"
-                        >
-                          {this.state.product.avalibleSize[0]
-                            .split(",")
-                            .map((l, m) => {
-                              return (
-                                <div key={l + Math.random(0, 1000)}>
-                                  <div className="grid-sizes">
-                                    <div style={{ marginTop: "15px" }}>{l}</div>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                        </div>
+                        {this.state.product.avalibleSize[0].split(",").length >
+                        0 ? (
+                          <>
+                            <div className="classic-label view-product-label">
+                              Select Size
+                            </div>
+                            <hr
+                              style={{ visibility: "hidden", height: "20px" }}
+                            ></hr>
+                            <div
+                              id="select-product-size"
+                              className="grid-container-size"
+                            >
+                              {this.state.product.avalibleSize[0]
+                                .split(",")
+                                .map((l, m) => {
+                                  return (
+                                    <div key={l + Math.random(0, 1000)}>
+                                      <div className="grid-sizes">
+                                        <div style={{ marginTop: "15px" }}>
+                                          {l}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                            </div>
+                          </>
+                        ) : null}
                       </>
                     ) : null}
-                        </>
-                    ) : null}
-                    <button
-                      className="button-28 view-product-label"
-                      id="add-to-cart"
-                    >
-                      Add to cart
-                    </button>
-                    <hr style={{ visibility: "hidden", height: "20px" }}></hr>
+                      <CartContext.Consumer>
+                        {(services) => {
+                          return (
+                            <>
+                              <button
+                                className="button-28 view-product-label"
+                                id="add-to-cart"
+                                onClick={() => {services.addToCart(this.state.product.id)}}
+                              >
+                                Add to cart
+                              </button>
+                              <hr
+                                style={{ visibility: "hidden", height: "20px" }}
+                              />
+                            </>
+                          );
+                        }}
+                      </CartContext.Consumer>
                     <div
                       id="des"
                       className="classic-label view-product-label"
@@ -145,7 +169,8 @@ class View extends Component {
                       >
                         Delivery
                       </div>{" "}
-                      All purchases are subject to delivery fees (4–10) business days
+                      All purchases are subject to delivery fees (4–10) business
+                      days
                     </div>
                   </div>
                 </div>

@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 // todo: assign auth header for all fetch request
+// todo: in category page until and unless the user refreshes dont fetch new result
 
 class AddProcutToTheme extends Component {
   constructor(props) {
