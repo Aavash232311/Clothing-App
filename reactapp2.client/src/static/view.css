@@ -213,6 +213,7 @@
     overflow: hidden;
     scrollbar-width: auto;
     margin-top: 100px;
+    z-index: -99999999999999;
   }
   #view-bg-frame {
     height: 1000px;

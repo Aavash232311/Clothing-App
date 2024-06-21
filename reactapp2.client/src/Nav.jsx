@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { NavItem, NavLink } from "reactstrap";
 import { Link } from "react-router-dom";
 import { CiHeart } from "react-icons/ci";
@@ -8,6 +8,14 @@ import Badge from "@mui/material/Badge";
 import logo from "./static/images/logo.png";
 import AuthContext, { AuthProvider } from "./authentication/auth";
 import { useCart } from "./Admin/public/cartContext";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import "./static/nav.css";
 
 function Nav() {
@@ -50,14 +58,13 @@ function Nav() {
       setShowMobileNav(true);
     }
   };
-  const { items } = useCart();
+  const { items, deleteCart } = useCart();
   let length = 0;
   if (items.length > 0) {
     for (let i = 0; i <= items.length - 1; i++) {
       length += items[i].quantity;
     }
   }
-  console.log(length, items);
   return (
     <>
       <AuthProvider>
@@ -189,7 +196,9 @@ function Nav() {
                       </div>
                       <div>
                         {items.length > 0 ? (
-                          <div style={{justifyContent: "right", float: "right"}}>
+                          <div
+                            style={{ justifyContent: "right", float: "right" }}
+                          >
                             <Badge
                               badgeContent={length}
                               color="secondary"
@@ -204,6 +213,81 @@ function Nav() {
                       </div>
                     </div>
                   </div>
+                  {items.length > 0 ? (
+                    <>
+                      <div id="cart-items-shortcut">
+                        <div style={{ justifyContent: "left" }}>
+                          <br />
+                          <center>
+                            <h5 className="classic-label">items</h5>
+                          </center>
+                        </div>
+                        <hr />
+                        <TableContainer component={Paper}>
+                          <Table
+                            sx={{
+                              width: "95%",
+                            }}
+                            size="small"
+                            aria-label="product and quantity"
+                          >
+                            <TableHead>
+                              <TableRow>
+                                <TableCell align="left">product</TableCell>
+                                <TableCell align="left">image</TableCell>
+                                <TableCell align="left">qty</TableCell>
+                                <TableCell align="left">del</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            {items.map((i, j) => {
+                              const { p } = i;
+                              return (
+                                  <TableBody key={Math.random(1, 100) + j}>
+                                    <TableRow
+                                      key={""}
+                                      sx={{
+                                        "&:last-child td, &:last-child th": {
+                                          border: 0,
+                                        },
+                                      }}
+                                    >
+                                      <TableCell component="th" scope="row">
+                                        {p.name}
+                                      </TableCell>
+                                      <TableCell component="th" scope="row">
+                                        <img
+                                          src={p.images[0]}
+                                          width="50px"
+                                          height="50px"
+                                        ></img>
+                                      </TableCell>
+                                      <TableCell component="th" scope="row">
+                                        {i.quantity}
+                                      </TableCell>
+                                      <TableCell component="th" scope="row">
+                                        <DeleteOutlinedIcon
+                                          onClick={() => {
+                                            deleteCart(p.id);
+                                          }}
+                                          className="nav-cart-del"
+                                        />
+                                      </TableCell>
+                                    </TableRow>
+                                  </TableBody>
+                              );
+                            })}
+                          </Table>
+                        </TableContainer>
+                        <hr style={{ visibility: "hidden" }} />
+                        <center>
+                          <button className="button-28" id="checkout-nav">
+                            Checkout
+                          </button>
+                        </center>
+                        <hr style={{ visibility: "hidden" }} />
+                      </div>
+                    </>
+                  ) : null}
                   {showMobileNav === true ? (
                     <>
                       <div id="mobile-nav-stack">

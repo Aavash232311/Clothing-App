@@ -138,7 +138,7 @@ class View extends Component {
                               <button
                                 className="button-28 view-product-label"
                                 id="add-to-cart"
-                                onClick={() => {services.addToCart(this.state.product.id)}}
+                                onClick={() => {services.addToCart(this.state.product)}}
                               >
                                 Add to cart
                               </button>

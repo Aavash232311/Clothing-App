@@ -1,49 +1,80 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300'); 
-#mobile-nav, #mobile-nav-stack {
-    display: none;
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300");
+#mobile-nav,
+#mobile-nav-stack {
+  display: none;
 }
 #mobile-nav-stack {
-    width: 60%;
-    height: 100vh;
-    background-color: white;
-    position: fixed;
-    z-index: 999;
-    right: 0;
-    margin-top: 50px;
-    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
-    animation-name: mobile-animation;
-    animation-duration: 1.2s;
+  width: 60%;
+  height: 100vh;
+  background-color: white;
+  position: fixed;
+  z-index: 999;
+  right: 0;
+  margin-top: 50px;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  animation-name: mobile-animation;
+  animation-duration: 1.2s;
 }
 @keyframes mobile-animation {
-    from {width: 0; opacity: 0;}
-    to {width: 60%; opacity: 100%;}
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 60%;
+    opacity: 100%;
+  }
+}
+#cart-items-shortcut {
+  width: 400px;
+  height: 350px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: white;
+  right: 15px;
+  position: fixed;
+  top: 85px;
+  overflow: auto;
+  z-index: 999999999999999;
 }
 .mob-cat {
-    margin-left: 5px;
-    border-bottom: 1px solid rgb(152, 152, 152);
-    width: 90%;
+  margin-left: 5px;
+  border-bottom: 1px solid rgb(152, 152, 152);
+  width: 90%;
+}
+#checkout-nav {
+  width: 95%;
+}
+.product-navCart {
+  width: 100%;
+  align-items: center;
+  overflow-x: hidden;
+  margin-top: 5px;
+  cursor: pointer;
+}
+.nav-cart-del:hover {
+    color: rgb(244, 132, 132)
 }
 #computer-nav {
-    z-index: 9999;
+  z-index: 9999;
 }
 @media screen and (max-width: 1129px) {
-    #bottom-category {
-        margin-left: 25%;
-        width: 200px;
-    }
+  #bottom-category {
+    margin-left: 25%;
+    width: 200px;
+  }
 }
 
 @media screen and (max-width: 1027px) {
-    #computer-nav {
-        display: none;
-    }
-    #mobile-nav, #mobile-nav-stack {
-        display: block;
-    }
-    #stack-icon-nav {
-        float: right;
-        margin-right: 10px;
-        margin-top: 20px;
-    }
+  #computer-nav {
+    display: none;
+  }
+  #mobile-nav,
+  #mobile-nav-stack {
+    display: block;
+  }
+  #stack-icon-nav {
+    float: right;
+    margin-right: 10px;
+    margin-top: 20px;
+  }
 }
