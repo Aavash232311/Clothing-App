@@ -19,7 +19,6 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import "./static/nav.css";
 
 function Nav() {
-  const [email, setEmail] = React.useState("");
   const [category, setCategory] = React.useState(null);
   const [showMobileNav, setShowMobileNav] = React.useState(false);
   React.useEffect(() => {
@@ -39,15 +38,21 @@ function Nav() {
         }
       });
     const bottomNav = document.querySelector("#bottom-nav");
-    console.log(window.location.href);
+    const cart = document.querySelector("#cart-items-shortcut");
     window.addEventListener("scroll", () => {
       if (bottomNav !== null && window.scrollY >= 50) {
         bottomNav.style.position = "fixed";
         bottomNav.style.top = "0";
         bottomNav.style.marginTop = "-0px";
+        if (cart != null) {
+          cart.style.top = "50px";
+        }
       } else {
         bottomNav.style.position = "relative";
         bottomNav.style.marginTop = "40px";
+        if (cart != null) {
+          cart.style.top = "85px";
+        }
       }
     });
   }, []);
@@ -58,7 +63,13 @@ function Nav() {
       setShowMobileNav(true);
     }
   };
-  const { items, deleteCart } = useCart();
+  const {
+    items,
+    deleteCart,
+    list,
+    setList,
+  } = useCart();
+
   let length = 0;
   if (items.length > 0) {
     for (let i = 0; i <= items.length - 1; i++) {
@@ -138,17 +149,16 @@ function Nav() {
                   </NavItem>
                   <div id="mobile-nav">
                     <svg
+                      id="stack-icon-nav"
+                      onClick={toggleMobileNav}
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
                       height="16"
                       fill="currentColor"
-                      className="bi bi-stack"
+                      className="bi bi-three-dots"
                       viewBox="0 0 16 16"
-                      id="stack-icon-nav"
-                      onClick={toggleMobileNav}
                     >
-                      <path d="m14.12 10.163 1.715.858c.22.11.22.424 0 .534L8.267 15.34a.6.6 0 0 1-.534 0L.165 11.555a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0l5.317-2.66zM7.733.063a.6.6 0 0 1 .534 0l7.568 3.784a.3.3 0 0 1 0 .535L8.267 8.165a.6.6 0 0 1-.534 0L.165 4.382a.299.299 0 0 1 0-.535z" />
-                      <path d="m14.12 6.576 1.715.858c.22.11.22.424 0 .534l-7.568 3.784a.6.6 0 0 1-.534 0L.165 7.968a.299.299 0 0 1 0-.534l1.716-.858 5.317 2.659c.505.252 1.1.252 1.604 0z" />
+                      <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
                     </svg>
                   </div>
                   <div id="computer-nav" style={{ zIndex: "99999999999" }}>
@@ -162,16 +172,16 @@ function Nav() {
                                   className="nav-div-labels"
                                   key={Math.random(0, 1000) + i.id}
                                 >
-                                  <div
-                                    style={{ marginTop: "15px" }}
-                                    className="bottom-category-labels"
-                                    key={i.id + Math.random(0, 1)}
-                                    onClick={() => {
-                                      window.location.href = `/in?vwe=${i.id}`;
-                                    }}
-                                  >
-                                    {i.productCategory}
-                                  </div>
+                                  <NavItem>
+                                    <NavLink
+                                      className="bottom-category-labels"
+                                      tag={Link}
+                                      to={`/in?k=${i.id}`}
+                                      style={{marginTop: "15px"}}
+                                    >
+                                      {i.productCategory}
+                                    </NavLink>
+                                  </NavItem>
                                 </div>
                               );
                             })}
@@ -213,13 +223,32 @@ function Nav() {
                       </div>
                     </div>
                   </div>
-                  {items.length > 0 ? (
+                  {list === true && items.length > 0 ? (
                     <>
                       <div id="cart-items-shortcut">
                         <div style={{ justifyContent: "left" }}>
                           <br />
                           <center>
-                            <h5 className="classic-label">items</h5>
+                            <h5 className="classic-label">
+                              items
+                              <div
+                                style={{ float: "right", marginRight: "10px" }}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="currentColor"
+                                  className="bi bi-x"
+                                  viewBox="0 0 16 16"
+                                  onClick={() => {
+                                    setList(false);
+                                  }}
+                                >
+                                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
+                                </svg>
+                              </div>
+                            </h5>
                           </center>
                         </div>
                         <hr />
@@ -237,43 +266,47 @@ function Nav() {
                                 <TableCell align="left">image</TableCell>
                                 <TableCell align="left">qty</TableCell>
                                 <TableCell align="left">del</TableCell>
+                                <TableCell align="left">size</TableCell>
                               </TableRow>
                             </TableHead>
                             {items.map((i, j) => {
                               const { p } = i;
                               return (
-                                  <TableBody key={Math.random(1, 100) + j}>
-                                    <TableRow
-                                      key={""}
-                                      sx={{
-                                        "&:last-child td, &:last-child th": {
-                                          border: 0,
-                                        },
-                                      }}
-                                    >
-                                      <TableCell component="th" scope="row">
-                                        {p.name}
-                                      </TableCell>
-                                      <TableCell component="th" scope="row">
-                                        <img
-                                          src={p.images[0]}
-                                          width="50px"
-                                          height="50px"
-                                        ></img>
-                                      </TableCell>
-                                      <TableCell component="th" scope="row">
-                                        {i.quantity}
-                                      </TableCell>
-                                      <TableCell component="th" scope="row">
-                                        <DeleteOutlinedIcon
-                                          onClick={() => {
-                                            deleteCart(p.id);
-                                          }}
-                                          className="nav-cart-del"
-                                        />
-                                      </TableCell>
-                                    </TableRow>
-                                  </TableBody>
+                                <TableBody key={Math.random(1, 100) + j}>
+                                  <TableRow
+                                    key={""}
+                                    sx={{
+                                      "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                      },
+                                    }}
+                                  >
+                                    <TableCell component="th" scope="row">
+                                      {p.name}
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                      <img
+                                        src={p.images[0]}
+                                        width="50px"
+                                        height="50px"
+                                      ></img>
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                      {i.quantity}
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                      <DeleteOutlinedIcon
+                                        onClick={() => {
+                                          deleteCart(p.id);
+                                        }}
+                                        className="nav-cart-del"
+                                      />
+                                    </TableCell>
+                                    <TableCell component="th" scope="row">
+                                      {i.size}
+                                    </TableCell>
+                                  </TableRow>
+                                </TableBody>
                               );
                             })}
                           </Table>
@@ -298,17 +331,18 @@ function Nav() {
                           <>
                             {category.map(function (i, j) {
                               return (
-                                <>
-                                  <div
-                                    onClick={() => {
-                                      window.location.href = `/in?vwe=${i.id}`;
-                                    }}
-                                    className="mob-cat classic-label"
-                                  >
-                                    {i.productCategory}
-                                  </div>{" "}
+                                <div key={j * Math.random(0, 100)}>
+                                  <NavItem>
+                                    <NavLink
+                                      className="mob-cat classic-label"
+                                      tag={Link}
+                                      to={`/in?vwe=${i.id}`}
+                                    >
+                                      {i.productCategory}
+                                    </NavLink>
+                                  </NavItem>
                                   <br />
-                                </>
+                                </div>
                               );
                             })}
                           </>

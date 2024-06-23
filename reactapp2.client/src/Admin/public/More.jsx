@@ -61,7 +61,7 @@ class More extends Component {
       page: 1,
       products: null,
       category: null,
-      id: this.searchParams.get("vwe"),
+      id: this.searchParams.get("k"),
       slowFilter: window.innerWidth <= 920 ? false : true,
       sales: false,
       price: false,
@@ -80,6 +80,11 @@ class More extends Component {
     this.sortByDate = this.sortByDate.bind(this);
     this.FilterToggle = this.FilterToggle.bind(this);
   }
+  // in this case there was NO possible way i could figure out the problem
+  // related to page not updating based on url paramaters (in case of same url different params) so the thing was
+  // least documented and the possible reason i found is
+  // to use the context api, add event to <NavLink> tag
+  // on that chage in event we will re-render the data
 
   fetchInitialData() {
     fetch(
@@ -227,9 +232,9 @@ class More extends Component {
   render() {
     window.addEventListener("resize", () => {
       if (window.innerWidth >= 920) {
-        this.setState({slowFilter: true});
+        this.setState({ slowFilter: true });
       }
-    })
+    });
     return (
       <div id="category-page-frame">
         <Nav /> <br />

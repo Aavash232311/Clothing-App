@@ -5,6 +5,10 @@ using ReactApp2.Server.Data;
 
 namespace ReactApp2.Server.Controllers
 {
+    public class Ids
+    {
+        public Guid[] id { get; set; }
+    }
     [Route("[controller]")]
     [ApiController]
     public class PublicController : ControllerBase
@@ -68,6 +72,17 @@ namespace ReactApp2.Server.Controllers
                 return new JsonResult(BadRequest(new { message = ex.Message }));
             }
         }
-
+        [Route("product-by-array")]
+        [HttpPost]
+        public IActionResult GetProductByArray(Ids items)
+        {
+            Guid[] arr = items.id;
+            if (arr != null && arr.Length > 0 && arr.Length <= 20)
+            {
+             var products = context.Products.Where(x => arr.Contains(x.Id));
+             return new JsonResult(Ok(products));
+            }
+            return new JsonResult(BadRequest(new {message = "invalid entry"}));
+        }
     }
 }

@@ -27,7 +27,8 @@
 }
 #cart-items-shortcut {
   width: 400px;
-  height: 350px;
+  min-height: 350px;
+  max-height: 600px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   background-color: white;
   right: 15px;

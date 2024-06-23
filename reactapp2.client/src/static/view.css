@@ -93,9 +93,7 @@
   box-shadow: none;
   transform: translateY(0);
 }
-.grid-sizes:hover {
-  border: 1px solid black;
-}
+
 
 #info-div-view-products {
   height: 500px;

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Nav from "../../Nav";
 import "../../static/view.css";
-import CartContext ,{ CartProvider } from "./cartContext";
+import CartContext, { CartProvider } from "./cartContext";
 class View extends Component {
   constructor(props) {
     super(props);
@@ -9,11 +9,13 @@ class View extends Component {
     this.id = this.searchParams.get("key");
     this.componentDidMount = this.componentDidMount.bind(this);
     this.previewImage = this.previewImage.bind(this);
+    this.setSize = this.setSize.bind(this);
   }
   // todo: category based search, based on gender, based on price, based on sales, based on brand
   state = {
     product: null,
     image: 0,
+    size: null,
   };
   componentDidMount() {
     fetch(`/public/get-product?id=${this.id}`, {
@@ -34,6 +36,18 @@ class View extends Component {
   previewImage(val) {
     if (window.innerWidth <= 1020) return;
     this.setState({ image: val });
+  }
+  setSize(value) {
+    this.setState({ size: value }, () => {
+      const elem = document.getElementsByClassName("grid-sizes");
+      for (let i = 0; i <= elem.length - 1; i++) {
+        if (elem[i].children[0].innerText === this.state.size) {
+          elem[i].style.border = "1px solid black";
+        }else{
+          elem[i].style.border = "1px solid rgb(185, 185, 185)";
+        }
+      }
+    });
   }
   static contextType = CartContext;
   render() {
@@ -118,8 +132,8 @@ class View extends Component {
                                 .map((l, m) => {
                                   return (
                                     <div key={l + Math.random(0, 1000)}>
-                                      <div className="grid-sizes">
-                                        <div style={{ marginTop: "15px" }}>
+                                      <div onClick={() => {this.setSize(l);}} className="grid-sizes">
+                                        <div className="grid-labels-size" style={{ marginTop: "15px" }}>
                                           {l}
                                         </div>
                                       </div>
@@ -131,24 +145,31 @@ class View extends Component {
                         ) : null}
                       </>
                     ) : null}
-                      <CartContext.Consumer>
-                        {(services) => {
-                          return (
-                            <>
-                              <button
-                                className="button-28 view-product-label"
-                                id="add-to-cart"
-                                onClick={() => {services.addToCart(this.state.product)}}
-                              >
-                                Add to cart
-                              </button>
-                              <hr
-                                style={{ visibility: "hidden", height: "20px" }}
-                              />
-                            </>
-                          );
-                        }}
-                      </CartContext.Consumer>
+                    <CartContext.Consumer>
+                      {(services) => {
+                        return (
+                          <>
+                            <button
+                              className="button-28 view-product-label"
+                              id="add-to-cart"
+                              onClick={() => {
+                                if (this.state.size === null) {
+                                  alert("No size selected");
+                                  return;
+                                }
+                                services.addToCart(this.state.product, this.state.size);
+                                services.setList(true);
+                              }}
+                            >
+                              Add to cart
+                            </button>
+                            <hr
+                              style={{ visibility: "hidden", height: "20px" }}
+                            />
+                          </>
+                        );
+                      }}
+                    </CartContext.Consumer>
                     <div
                       id="des"
                       className="classic-label view-product-label"

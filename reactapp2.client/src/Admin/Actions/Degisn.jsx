@@ -51,6 +51,7 @@ class AddProcutToTheme extends Component {
         }
       });
   }
+  
 
   loadThemedProduct() {
     // load added products to the theme
