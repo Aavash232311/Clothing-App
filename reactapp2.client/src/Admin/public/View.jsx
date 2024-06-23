@@ -43,7 +43,7 @@ class View extends Component {
       for (let i = 0; i <= elem.length - 1; i++) {
         if (elem[i].children[0].innerText === this.state.size) {
           elem[i].style.border = "1px solid black";
-        }else{
+        } else {
           elem[i].style.border = "1px solid rgb(185, 185, 185)";
         }
       }
@@ -132,8 +132,16 @@ class View extends Component {
                                 .map((l, m) => {
                                   return (
                                     <div key={l + Math.random(0, 1000)}>
-                                      <div onClick={() => {this.setSize(l);}} className="grid-sizes">
-                                        <div className="grid-labels-size" style={{ marginTop: "15px" }}>
+                                      <div
+                                        onClick={() => {
+                                          this.setSize(l);
+                                        }}
+                                        className="grid-sizes"
+                                      >
+                                        <div
+                                          className="grid-labels-size"
+                                          style={{ marginTop: "15px" }}
+                                        >
                                           {l}
                                         </div>
                                       </div>
@@ -157,8 +165,13 @@ class View extends Component {
                                   alert("No size selected");
                                   return;
                                 }
-                                services.addToCart(this.state.product, this.state.size);
-                                services.setList(true);
+                                services.addToCart(
+                                  this.state.product,
+                                  this.state.size
+                                );
+                                if (window.innerWidth >= 920) {
+                                  services.setList(true);
+                                }
                               }}
                             >
                               Add to cart

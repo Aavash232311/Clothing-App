@@ -22,13 +22,13 @@
 }
 #root {
   height: 100vh;
-  background-color: white;
   background-color: #f6f5f7;
 }
 #bottom-nav-left {
   float: left;
   width: 200px;
   height: 50px;
+  z-index: 999999999999999999999999999999999999999;
   
 }
 .register-logo {

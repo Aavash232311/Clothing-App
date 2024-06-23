@@ -86,15 +86,14 @@ export const CartProvider = ({ children }) => {
               const id = i.id;
               // from the local storage we are getting data
               // we need to structure it like the initial data so
-              var p = value.find(x => x.id == id);
+              var p = value.find((x) => x.id == id);
               temp.push({
                 p,
                 size: i.size,
-                quantity: i.qty
-              })
+                quantity: i.qty,
+              });
             });
             setItems(temp);
-            setList(true);
           });
       }
     }
@@ -105,7 +104,7 @@ export const CartProvider = ({ children }) => {
     cartItems = cartItems.filter((x) => x.p.id !== id);
     // remove from local storage too
     let getItem = JSON.parse(localStorage.getItem("cart"));
-    getItem = getItem.filter(x => x.id != id);
+    getItem = getItem.filter((x) => x.id != id);
     localStorage.setItem("cart", JSON.stringify(getItem));
     setItems(cartItems);
   };

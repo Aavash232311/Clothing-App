@@ -44,6 +44,7 @@ function Nav() {
         bottomNav.style.position = "fixed";
         bottomNav.style.top = "0";
         bottomNav.style.marginTop = "-0px";
+        bottomNav.style.zIndex = "99999999999999999999";
         if (cart != null) {
           cart.style.top = "50px";
         }
@@ -63,12 +64,7 @@ function Nav() {
       setShowMobileNav(true);
     }
   };
-  const {
-    items,
-    deleteCart,
-    list,
-    setList,
-  } = useCart();
+  const { items, deleteCart, list, setList } = useCart();
 
   let length = 0;
   if (items.length > 0) {
@@ -173,13 +169,13 @@ function Nav() {
                                   key={Math.random(0, 1000) + i.id}
                                 >
                                   <div
-                                      className="bottom-category-labels"
-                                      onClick={() => {
-                                        window.location.href = `/in?k=${i.id}`;
-                                      }}
-                                      style={{marginTop: "15px"}}
-                                    >
-                                      {i.productCategory}
+                                    className="bottom-category-labels"
+                                    onClick={() => {
+                                      window.location.href = `/in?k=${i.id}`;
+                                    }}
+                                    style={{ marginTop: "15px" }}
+                                  >
+                                    {i.productCategory}
                                   </div>
                                 </div>
                               );
@@ -204,21 +200,28 @@ function Nav() {
                         <CiHeart className="botton-nav-icons" />
                       </div>
                       <div>
-                        {items.length > 0 ? (
-                          <div
-                            style={{ justifyContent: "right", float: "right" }}
-                          >
-                            <Badge
-                              badgeContent={length}
-                              color="secondary"
-                              overlap="circular"
-                            >
+                        <NavItem>
+                          <NavLink tag={Link} to={"/chittychittybangbang"}>
+                            {items.length > 0 ? (
+                              <div
+                                style={{
+                                  justifyContent: "right",
+                                  float: "right",
+                                }}
+                              >
+                                <Badge
+                                  badgeContent={length}
+                                  color="secondary"
+                                  overlap="circular"
+                                >
+                                  <PiBagLight className="botton-nav-icons" />
+                                </Badge>
+                              </div>
+                            ) : (
                               <PiBagLight className="botton-nav-icons" />
-                            </Badge>
-                          </div>
-                        ) : (
-                          <PiBagLight className="botton-nav-icons" />
-                        )}
+                            )}
+                          </NavLink>
+                        </NavItem>
                       </div>
                     </div>
                   </div>

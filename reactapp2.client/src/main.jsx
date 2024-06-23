@@ -13,6 +13,7 @@ import LoginCode from "./authentication/LoginCode.jsx";
 import View from "./Admin/public/View.jsx";
 import More from "./Admin/public/More.jsx";
 import { CartProvider } from "./Admin/public/cartContext.jsx";
+import Bag from "./Admin/public/Cart.jsx";
 
 let router = [
   {
@@ -55,6 +56,11 @@ let router = [
     element: <More />,
     allowedRoles: [],
   },
+  {
+    path: "/chittychittybangbang",
+    element: <Bag />,
+    allowedRoles: [],
+  }
 ];
 
 // (RBAC) FOR UI, API IS SECURE AND INDEPENDENT OF CLIENT SIDE
