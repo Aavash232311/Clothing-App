@@ -172,16 +172,15 @@ function Nav() {
                                   className="nav-div-labels"
                                   key={Math.random(0, 1000) + i.id}
                                 >
-                                  <NavItem>
-                                    <NavLink
+                                  <div
                                       className="bottom-category-labels"
-                                      tag={Link}
-                                      to={`/in?k=${i.id}`}
+                                      onClick={() => {
+                                        window.location.href = `/in?k=${i.id}`;
+                                      }}
                                       style={{marginTop: "15px"}}
                                     >
                                       {i.productCategory}
-                                    </NavLink>
-                                  </NavItem>
+                                  </div>
                                 </div>
                               );
                             })}

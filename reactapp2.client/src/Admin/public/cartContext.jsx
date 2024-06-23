@@ -23,27 +23,33 @@ export const CartProvider = ({ children }) => {
         updatedItems[existingItemIndex].size = size;
         // here update in local storage too
         let getItem = JSON.parse(localStorage.getItem("cart"));
-        getItem = getItem.filter(x => x.id != id); // first we filter item not having that we want to update
-        const obj = { // we create a new instance of updated object
+        getItem = getItem.filter((x) => x.id != id); // first we filter item not having that we want to update
+        const obj = {
+          // we create a new instance of updated object
           id,
           qty: updatedItems[existingItemIndex].quantity,
-          size: updatedItems[existingItemIndex].size = size
-        }
-        getItem.push(obj); // we assign it 
+          size: (updatedItems[existingItemIndex].size = size),
+        };
+        getItem.push(obj); // we assign it
         localStorage.setItem("cart", JSON.stringify(getItem));
         setItems(updatedItems);
       }
     } else {
-      localStorage.setItem(
-        "cart",
-        JSON.stringify([
-          {
-            id,
-            qty: 1,
-            size,
-          },
-        ])
-      );
+      // we need first check to see if its null.
+      // if not null then we need to appened it because we might have some other object already
+      let cart = localStorage.getItem("cart");
+      const obj = {
+        id,
+        qty: 1,
+        size,
+      };
+      if (cart === null) {
+        localStorage.setItem("cart", JSON.stringify([obj]));
+      } else {
+        let getItem = JSON.parse(localStorage.getItem("cart"));
+        getItem.push(obj);
+        localStorage.setItem("cart", JSON.stringify(getItem));
+      }
       setItems([...items, { p, quantity: 1, size }]);
     }
   };
@@ -75,23 +81,32 @@ export const CartProvider = ({ children }) => {
             const { statusCode, value } = response;
             if (statusCode !== 200) return;
             // map over item, get item having particular id, structure it well and push in current state
+            const temp = [];
             item.map((i) => {
               const id = i.id;
-              const p = value.find((x) => x.id === id);
-              setItems([{ p, quantity: i.qty, size: i.size }]);
-              setList(true);
+              // from the local storage we are getting data
+              // we need to structure it like the initial data so
+              var p = value.find(x => x.id == id);
+              temp.push({
+                p,
+                size: i.size,
+                quantity: i.qty
+              })
             });
+            setItems(temp);
+            setList(true);
           });
       }
     }
   }, []);
 
-
   const deleteCart = (id) => {
     let cartItems = [...items];
     cartItems = cartItems.filter((x) => x.p.id !== id);
     // remove from local storage too
-
+    let getItem = JSON.parse(localStorage.getItem("cart"));
+    getItem = getItem.filter(x => x.id != id);
+    localStorage.setItem("cart", JSON.stringify(getItem));
     setItems(cartItems);
   };
   return (
