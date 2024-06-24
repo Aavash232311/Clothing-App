@@ -7,19 +7,36 @@ class Bag extends Component {
     product: null,
     price: 0,
     shipping: 80,
+    updateList: [],
   };
   static contextType = CartContext;
   componentDidMount() {
     const item = localStorage.getItem("cart");
     if (item === null) return;
+    try {
+      if (JSON.parse(item).length === 0) return;
+    } catch (error) {}
     this.setState({ product: JSON.parse(item) });
   }
   render() {
-    const { items } = this.context;
+    const { items, addToCart, deleteCart } = this.context;
     let Subtotal = 0;
     items.map((i) => {
       Subtotal += i.p.price * i.quantity;
     });
+
+    const updateAble = (id, toUpdate, ev) => {
+      // to update either size, or quantity or even sometihng more if we want to add up
+      const { value } = ev.target;
+      const p = items.find((x) => x.p.id === id);
+      if (toUpdate === "qty") {
+        // here set the default size,
+        addToCart(p.p, p.size, parseInt(value)); // in this case value = quantity
+      } else {
+        addToCart(p.p, value, p.quantity);
+      }
+    };
+
     return (
       <div style={{ height: "auto", backgroundColor: "#f6f5f7" }}>
         <Nav />
@@ -53,7 +70,7 @@ class Bag extends Component {
                                       src={product.images[0]}
                                     ></img>
                                   </div>
-                                  <div className="cart-product-info">
+                                  <div className="cart-product-info classic-label">
                                     <hr style={{ visibility: "hidden" }} />
                                     <ul style={{ listStyle: "none" }}>
                                       <li className="topListCart">
@@ -82,6 +99,9 @@ class Bag extends Component {
                                         <select
                                           defaultValue={i.size}
                                           className="cart-options"
+                                          onInput={(ev) => {
+                                            updateAble(product.id, "size", ev);
+                                          }}
                                         >
                                           {product.avalibleSize.map((k, l) => {
                                             return (
@@ -95,6 +115,9 @@ class Bag extends Component {
                                         <select
                                           defaultValue={i.quantity}
                                           className="qty-cart"
+                                          onInput={(ev) => {
+                                            updateAble(product.id, "qty", ev);
+                                          }}
                                         >
                                           {Array.from(
                                             { length: 10 },
@@ -128,6 +151,9 @@ class Bag extends Component {
                                           className="bi bi-trash cart-dim"
                                           viewBox="0 0 16 16"
                                           style={{ marginLeft: "10px" }}
+                                          onClick={() => {
+                                            deleteCart(product.id);
+                                          }}
                                         >
                                           <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
                                           <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />

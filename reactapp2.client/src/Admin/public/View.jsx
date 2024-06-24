@@ -167,7 +167,8 @@ class View extends Component {
                                 }
                                 services.addToCart(
                                   this.state.product,
-                                  this.state.size
+                                  this.state.size,
+                                  null,
                                 );
                                 if (window.innerWidth >= 920) {
                                   services.setList(true);

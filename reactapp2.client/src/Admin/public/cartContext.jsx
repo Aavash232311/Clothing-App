@@ -10,30 +10,30 @@ export const CartProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const [list, setList] = useState(false);
 
-  const addToCart = (p, size) => {
+  const addToCart = (p, size, quantity) => {
     const id = p.id;
     const existingItemIndex = items.findIndex((item) => item.p.id === id);
     // we need to assign id, quatntity and size to the local storage and even update if necessary
     if (existingItemIndex !== -1) {
       const updatedItems = [...items];
-      if (updatedItems[existingItemIndex].quantity >= 10) {
-        alert("Contact at company number to order more than 10 items");
+      if (quantity != null) {
+        updatedItems[existingItemIndex].quantity = quantity;
       } else {
         updatedItems[existingItemIndex].quantity++;
-        updatedItems[existingItemIndex].size = size;
-        // here update in local storage too
-        let getItem = JSON.parse(localStorage.getItem("cart"));
-        getItem = getItem.filter((x) => x.id != id); // first we filter item not having that we want to update
-        const obj = {
-          // we create a new instance of updated object
-          id,
-          qty: updatedItems[existingItemIndex].quantity,
-          size: (updatedItems[existingItemIndex].size = size),
-        };
-        getItem.push(obj); // we assign it
-        localStorage.setItem("cart", JSON.stringify(getItem));
-        setItems(updatedItems);
       }
+      updatedItems[existingItemIndex].size = size;
+      // here update in local storage too
+      let getItem = JSON.parse(localStorage.getItem("cart"));
+      getItem = getItem.filter((x) => x.id != id); // first we filter item not having that we want to update
+      const obj = {
+        // we create a new instance of updated object
+        id,
+        qty: updatedItems[existingItemIndex].quantity,
+        size: (updatedItems[existingItemIndex].size = size),
+      };
+      getItem.push(obj); // we assign it
+      localStorage.setItem("cart", JSON.stringify(getItem));
+      setItems(updatedItems);
     } else {
       // we need first check to see if its null.
       // if not null then we need to appened it because we might have some other object already
