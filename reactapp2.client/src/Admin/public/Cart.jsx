@@ -7,7 +7,6 @@ class Bag extends Component {
     product: null,
     price: 0,
     shipping: 80,
-    updateList: [],
   };
   static contextType = CartContext;
   componentDidMount() {
@@ -95,22 +94,32 @@ class Bag extends Component {
                                           : "Women's"}
                                       </li>
                                       <li className="product-cart-font">
-                                        Size:
-                                        <select
-                                          defaultValue={i.size}
-                                          className="cart-options"
-                                          onInput={(ev) => {
-                                            updateAble(product.id, "size", ev);
-                                          }}
-                                        >
-                                          {product.avalibleSize.map((k, l) => {
-                                            return (
-                                              <option key={l} value={k}>
-                                                {k}
-                                              </option>
-                                            );
-                                          })}
-                                        </select>{" "}
+                                        {product.avalibleSize.length > 0 ? (
+                                          <>
+                                            Size:
+                                            <select
+                                              defaultValue={i.size}
+                                              className="cart-options"
+                                              onInput={(ev) => {
+                                                updateAble(
+                                                  product.id,
+                                                  "size",
+                                                  ev
+                                                );
+                                              }}
+                                            >
+                                              {product.avalibleSize.map(
+                                                (k, l) => {
+                                                  return (
+                                                    <option key={l} value={k}>
+                                                      {k}
+                                                    </option>
+                                                  );
+                                                }
+                                              )}
+                                            </select>{" "}
+                                          </>
+                                        ) : null}
                                         Quantity:
                                         <select
                                           defaultValue={i.quantity}

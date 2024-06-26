@@ -141,7 +141,8 @@ namespace ReactApp2.Server.Controllers
         public IActionResult GetCategoryLoad() // public
         {
             var getSlots = context.Featureds.Include(x => x.Products).Take(5);
-            return new JsonResult(Ok(getSlots));
+            var getRecent = context.Products.OrderBy(x => x.Added).Take(6);
+            return new JsonResult(Ok(new {products = getSlots, recent = getRecent }));
         }
         [HttpPut]
         [Route("updateSlotsHomePage/{id}")]

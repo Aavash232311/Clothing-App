@@ -12,6 +12,7 @@
   -moz-osx-font-smoothing: grayscale;
   overflow: auto;
   background-color: white;
+  height: auto;
 }
 
 
@@ -32,6 +33,7 @@
 }
 #root {
   width: 100% !important;
+  height: auto;
 }
 
 a {

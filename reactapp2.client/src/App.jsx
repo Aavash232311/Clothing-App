@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 function App() {
   const [slot, setSlot] = React.useState(null);
+  const [recentProduct, setRecent] = React.useState(null);
   React.useEffect(() => {
     fetch("/staff/getSlotsHomePage", {
       method: "get",
@@ -17,13 +18,40 @@ function App() {
       .then((rsp) => rsp.json())
       .then((response) => {
         const { statusCode, value } = response;
+        const { products, recent } = value;
         if (statusCode === 200) {
-          setSlot(value);
+          setSlot(products);
+          setRecent(recent);
         }
       });
   }, []);
+
+  const MapProduct = (props) => {
+    return (
+      <>
+        {props.product.map((l, m) => {
+          return (
+            <div key={l.id + Math.random(10001, 2000)}>
+              <NavItem>
+                <NavLink tag={Link} to={`/view?key=${l.id}`}>
+                  <div className="product-cart">
+                    <img width="100%" height="500" src={l.images[0]}></img>
+                    <hr style={{ visibility: "hidden" }}></hr>
+                    <div className="product-cart-label-name">{l.name}</div>
+                    <hr style={{ visibility: "hidden" }}></hr>
+                    <div className="product-cart-label-name">Rs: {l.price}</div>
+                  </div>
+                </NavLink>
+              </NavItem>
+            </div>
+          );
+        })}
+      </>
+    );
+  };
+
   return (
-    <div>
+    <div id="app-frame-home">
       <Nav />
       {/* {"lets iterate over themes"} */}
       {slot != null ? (
@@ -39,7 +67,12 @@ function App() {
                 <div>
                   <NavItem>
                     <NavLink tag={Link} to={i.link}>
-                      <img className="poster" height="auto" width="100%" src={i.image}></img>
+                      <img
+                        className="poster"
+                        height="auto"
+                        width="100%"
+                        src={i.image}
+                      ></img>
                     </NavLink>
                   </NavItem>
                   <hr style={{ visibility: "hidden", height: "25px" }}></hr>
@@ -50,31 +83,7 @@ function App() {
                     <hr style={{ visibility: "hidden" }} />
                     {products.length > 0 ? (
                       <div className="grid-containor-home-page">
-                        {products.map((l, m) => {
-                          return (
-                            <div key={l.id + Math.random(10001, 2000)}>
-                              <NavItem>
-                                <NavLink tag={Link} to={`/view?key=${l.id}`}>
-                                  <div className="product-cart">
-                                    <img
-                                      width="100%"
-                                      height="500"
-                                      src={l.images[0]}
-                                    ></img>
-                                    <hr style={{ visibility: "hidden" }}></hr>
-                                    <div className="product-cart-label-name">
-                                      {l.name}
-                                    </div>
-                                    <hr style={{ visibility: "hidden" }}></hr>
-                                    <div className="product-cart-label-name">
-                                      Rs: {l.price}
-                                    </div>
-                                  </div>
-                                </NavLink>
-                              </NavItem>
-                            </div>
-                          );
-                        })}
+                        <MapProduct product={products} />
                       </div>
                     ) : null}
                   </center>
@@ -82,6 +91,17 @@ function App() {
               </div>
             );
           })}
+        </>
+      ) : null}
+      {recentProduct != null && recentProduct.length > 0 ? (
+        <>
+          <div className="roboto-condensed">Recently added</div>
+          <div
+            style={{ listStyle: "none" }}
+            className="n-slorts-home"
+          >
+            <MapProduct product={recentProduct} />
+          </div>
         </>
       ) : null}
     </div>
