@@ -5,6 +5,7 @@ import { TbMoneybag } from "react-icons/tb";
 import Category from "./Actions/Category";
 import Degisn from "./Actions/Degisn";
 import Product from "./Actions/Product";
+import Shipping from "./Actions/Shipping";
 import "../static/admin.css";
 
 const navContent = [
@@ -15,13 +16,10 @@ const navContent = [
     title: "Order",
   },
   {
-    title: "Trending images",
-  },
-  {
     title: "Category map",
   },
   {
-    title: "page design"
+    title: "page design",
   },
   {
     title: "Stock",
@@ -79,9 +77,11 @@ function AdminDashboard() {
       case "Category map":
         return <Category />;
       case "page design":
-        return <Degisn />
-      case "Product": 
-      return <Product />
+        return <Degisn />;
+      case "Product":
+        return <Product />;
+      case "Shipping":
+        return <Shipping />;
     }
   };
 
@@ -112,7 +112,7 @@ function AdminDashboard() {
       </div>
       <div id="admin-structure-placer">
         <div>
-        <SideNav render={renderFunction} />
+          <SideNav render={renderFunction} />
         </div>
 
         <div id="playground">

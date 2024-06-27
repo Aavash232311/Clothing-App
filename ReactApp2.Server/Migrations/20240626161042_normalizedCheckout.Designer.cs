@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ReactApp2.Server.Data;
 
@@ -11,9 +12,11 @@ using ReactApp2.Server.Data;
 namespace ReactApp2.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240626161042_normalizedCheckout")]
+    partial class normalizedCheckout
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -271,8 +274,8 @@ namespace ReactApp2.Server.Migrations
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
 
-                    b.Property<decimal?>("NetTotalAmount")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("NetTotalAmount")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -298,22 +301,6 @@ namespace ReactApp2.Server.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Checkouts");
-                });
-
-            modelBuilder.Entity("ReactApp2.Server.Models.Delivery", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("DeliveryAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Deliveries");
                 });
 
             modelBuilder.Entity("ReactApp2.Server.Models.Details", b =>

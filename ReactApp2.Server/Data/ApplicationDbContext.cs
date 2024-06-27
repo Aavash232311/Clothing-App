@@ -18,6 +18,7 @@ namespace ReactApp2.Server.Data
         public DbSet<Featured> Featureds { get; set; }
         public DbSet<Checkout> Checkouts { get; set; }
         public DbSet<ProductCheck> ProductCheckout { get; set; }
+        public DbSet<Delivery> Deliveries { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

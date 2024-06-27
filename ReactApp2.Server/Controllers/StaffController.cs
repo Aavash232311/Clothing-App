@@ -53,6 +53,16 @@ namespace ReactApp2.Server.Controllers
             this.userManager = userManager;
             this.helper = new Helper();
         }
+        [Route("set-delivery-charge")]
+        [HttpPut] 
+        public async Task<IActionResult> SetDeliveryCharge(decimal charge)
+        {
+            var getChargeModule = context.Deliveries.FirstOrDefault();
+            if (getChargeModule == null) return new JsonResult(NotFound());
+            getChargeModule.DeliveryAmount = charge;
+            await context.SaveChangesAsync();
+            return new JsonResult(Ok());
+        }
         [Route("addHomePageCategory")]
         [HttpGet]
         public async Task<IActionResult> AddHomePageCategory(string id, string action)

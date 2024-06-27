@@ -315,9 +315,13 @@ function Nav() {
                         </TableContainer>
                         <hr style={{ visibility: "hidden" }} />
                         <center>
-                          <button className="button-28" id="checkout-nav">
-                            Checkout
-                          </button>
+                          <NavItem>
+                            <NavLink tag={Link} to="/chittychittybangbang">
+                              <button className="button-28" id="checkout-nav">
+                                Checkout
+                              </button>
+                            </NavLink>
+                          </NavItem>
                         </center>
                         <hr style={{ visibility: "hidden" }} />
                       </div>

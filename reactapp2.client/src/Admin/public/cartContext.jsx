@@ -10,6 +10,12 @@ export const CartProvider = ({ children }) => {
   const [items, setItems] = useState([]);
   const [list, setList] = useState(false);
 
+  const destructiveState = () => {
+    setItems([]),
+    setList(false),
+    localStorage.removeItem("cart");
+  }
+
   const addToCart = (p, size, quantity) => {
     const id = p.id;
     const existingItemIndex = items.findIndex((item) => item.p.id === id);
@@ -110,7 +116,7 @@ export const CartProvider = ({ children }) => {
   };
   return (
     <CartContext.Provider
-      value={{ addToCart, items, deleteCart, list, setList }}
+      value={{ addToCart, items, deleteCart, list, setList, destructiveState }}
     >
       {children}
     </CartContext.Provider>

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "2nSMf/4pqdsFbaFtveERCryEwSVwV9KxE3Zbd/cIdxE=",
+  "Hash": "Mqw2vVt+1WVxY1Sz00cA4LIkVYrIQAQ6KEsHuWklMJc=",
   "Source": "ReactApp2.Server",
   "BasePath": "_content/ReactApp2.Server",
   "Mode": "Default",
@@ -11,10 +11,10 @@
       "Version": 2,
       "Source": "reactapp2.client",
       "GetPublishAssetsTargets": "GetCurrentProjectPublishStaticWebAssetItems",
-      "AdditionalPublishProperties": "",
+      "AdditionalPublishProperties": "Configuration=Debug;Platform=AnyCPU",
       "AdditionalPublishPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained",
       "GetBuildAssetsTargets": "GetCurrentProjectBuildStaticWebAssetItems",
-      "AdditionalBuildProperties": "",
+      "AdditionalBuildProperties": "Configuration=Debug;Platform=AnyCPU",
       "AdditionalBuildPropertiesToRemove": "WebPublishProfileFile;TargetFramework;RuntimeIdentifier;SelfContained"
     }
   ],

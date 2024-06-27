@@ -253,7 +253,8 @@ class AddSlotImages extends Component {
       .then((response) => {
         const { statusCode, value } = response;
         if (statusCode === 200) {
-          this.setState({ slots: value });
+          const { products, recent } = value;
+          this.setState({ slots: products });
         }
       });
   }
@@ -381,7 +382,7 @@ class AddSlotImages extends Component {
           </button>
         </form>
         <hr style={{ visibility: "hiddern" }} />
-        {this.state.slots != null ? (
+        {this.state.slots != null? (
           <>
             <TableContainer
               sx={{ width: "90%", float: "left", m: 1 }}

@@ -57,6 +57,7 @@ export default function SignUp() {
   };
   return (
     <div id="register-body">
+      <hr style={{visibility: "hidden", height: "20px"}} />
       <center>
         <div id="register-frame">
           <div className="register-logo-placer">

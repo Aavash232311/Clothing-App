@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ReactApp2.Server.Data;
+using ReactApp2.Server.Models;
 
 namespace ReactApp2.Server.Controllers
 {
@@ -9,6 +10,23 @@ namespace ReactApp2.Server.Controllers
     {
         public Guid[] id { get; set; }
     }
+    public class ProductAndQuantity
+    {
+        public Guid ProductId { get; set; }
+        public int qty { get; set; }
+        public string? size { get; set; } = string.Empty;
+        public decimal? totalPrice { get; set; } = 0;
+    }
+    public class SearlizedCheckout
+    {
+        public string Address { get; set; } = string.Empty;
+        public string? Province { get; set; } = string.Empty;
+        public string? ZipCode { get; set; } = string.Empty;
+        public string PhoneNumber { get; set; } = string.Empty;
+        public string? Street { get; set; } = string.Empty;
+        public List<ProductAndQuantity> CheckOutProducts { get; set; } = new List<ProductAndQuantity>();
+    }
+
     [Route("[controller]")]
     [ApiController]
     public class PublicController : ControllerBase
@@ -17,6 +35,47 @@ namespace ReactApp2.Server.Controllers
         public PublicController(ApplicationDbContext context)
         {
             this.context = context;
+        }
+        [Route("deliveryCharge")]
+        [HttpGet]
+        public IActionResult GetDeliveryCharge()
+        {
+            return new JsonResult(Ok(context.Deliveries.FirstOrDefault()));
+        }
+        // later after fixing bug in auth add authorize 
+        [Route("checkout-product")]
+        [HttpPost]
+        public async Task<IActionResult> CheckOutPorudct(SearlizedCheckout CheckOutProduct)
+        {
+            decimal Total = 0;
+            List <Product> product = new List<Product>();
+            foreach (var  i in CheckOutProduct.CheckOutProducts)
+            {
+                // since we don't want to be dependent upon prcie for frontend
+                var getProduct = context.Products.Where(x => x.Id == i.ProductId).FirstOrDefault();
+                if (getProduct == null) { return new JsonResult(BadRequest(new { message = "something went wrong :(" })); }
+                Total += getProduct.Price * i.qty;
+                product.Add(getProduct);
+                i.totalPrice = getProduct.Price * i.qty;
+                var additionalCharge = context.Deliveries.FirstOrDefault();
+                if (additionalCharge != null)
+                {
+                    Total += additionalCharge.DeliveryAmount;
+                }
+            }
+            var checkout = new Checkout()
+            {
+                Address = CheckOutProduct.Address,
+                ZipCode = CheckOutProduct.ZipCode,
+                PhoneNumber = CheckOutProduct.PhoneNumber,
+                Province = CheckOutProduct.Province,
+                Street = CheckOutProduct.Street,
+                Status = "not verified",
+                NetTotalAmount = Total
+            };
+            context.Checkouts.Add(checkout);
+            await context.SaveChangesAsync();
+            return new JsonResult(Ok(checkout));
         }
         [Route("get-product")]
         [HttpGet]

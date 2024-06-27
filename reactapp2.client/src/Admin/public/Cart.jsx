@@ -6,16 +6,80 @@ class Bag extends Component {
   state = {
     product: null,
     price: 0,
-    shipping: 80,
+    shipping: null,
   };
+
+  constructor(props) {
+    super(props);
+    this.update = this.update.bind(this);
+    this.submit = this.submit.bind(this);
+  }
   static contextType = CartContext;
   componentDidMount() {
     const item = localStorage.getItem("cart");
+    fetch("public/deliveryCharge", {
+      method: "get",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((rsp) => rsp.json())
+      .then((response) => {
+        const { statusCode, value } = response;
+        if (statusCode !== 200) return;
+        const { deliveryAmount } = value;
+        this.setState({ shipping: deliveryAmount });
+      });
     if (item === null) return;
     try {
       if (JSON.parse(item).length === 0) return;
     } catch (error) {}
     this.setState({ product: JSON.parse(item) });
+    const { setList } = this.context;
+    setList(false);
+  }
+
+  update(ev) {
+    const { name, value } = ev.target;
+    this.setState({ [name]: value });
+  }
+  submit(ev) {
+    const { destructiveState } = this.context;
+    ev.preventDefault();
+    const { product } = this.state; // this product has the product, quantity and size that we want to checkout
+    const normalizedProduct = [];
+    product.map((obj) => {
+      normalizedProduct.push({
+        ProductId: obj.id,
+        qty: obj.qty,
+        size: obj.size,
+      });
+    });
+    this.setState({ CheckOutProducts: normalizedProduct }, () => {
+      fetch("public/checkout-product", {
+        method: "post",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.state),
+      })
+        .then((r) => {
+          return r.json();
+        })
+        .then((response) => {
+          const { statusCode } = response;
+          if (statusCode === 200) {
+            destructiveState();
+            this.setState({
+              product: null,
+              price: 0,
+              shipping: null,
+            });
+          }
+        });
+    });
   }
   render() {
     const { items, addToCart, deleteCart } = this.context;
@@ -34,8 +98,12 @@ class Bag extends Component {
       } else {
         addToCart(p.p, value, p.quantity);
       }
+      // since the attributes are updated, we can update our local compoenet state as well
+      this.setState({ product: JSON.parse(localStorage.getItem("cart")) }); // basically local store is updated as well
     };
-
+    // checkout from
+    // make sure the form works considering the case the user is logged in
+    // in next case make use of call back function to login a user
     return (
       <div style={{ height: "auto", backgroundColor: "#f6f5f7" }}>
         <Nav />
@@ -200,10 +268,53 @@ class Bag extends Component {
                       Rs: {this.state.shipping + Subtotal}
                     </span>
                   </div>
+                  <div className="classic-label summary-labels">
+                    Payment
+                    <span className="summary-labes-right">
+                      Delivery on cash
+                    </span>
+                  </div>
                   <hr />
-                  <button className="button-28-black" id="checkout-cart">
-                    Checkout
-                  </button>
+                  <form onSubmit={this.submit}>
+                    <input
+                      onInput={this.update}
+                      className="figma-input checkout-form"
+                      name="Address"
+                      placeholder="Full address"
+                      required
+                    ></input>
+                    <input
+                      onInput={this.update}
+                      className="figma-input checkout-form"
+                      name="Province"
+                      placeholder="Province"
+                    ></input>
+                    <input
+                      onInput={this.update}
+                      className="figma-input checkout-form"
+                      name="Street"
+                      placeholder="Street"
+                    ></input>
+                    <input
+                      onInput={this.update}
+                      className="figma-input checkout-form"
+                      name="ZipCode"
+                      placeholder="Zip Code"
+                    ></input>
+                    <input
+                      onInput={this.update}
+                      className="figma-input checkout-form"
+                      name="PhoneNumber"
+                      placeholder="Phone number 977"
+                    ></input>
+                    <button
+                      type="submit"
+                      className="button-28-black"
+                      id="checkout-cart"
+                    >
+                      Checkout
+                    </button>
+                  </form>
                 </div>
               </div>
             </center>
@@ -211,7 +322,9 @@ class Bag extends Component {
         ) : (
           <>
             <center>
-              <div className="roboto-condensed-light">Shop to add to cart!</div>
+              <div onClick={this.submit} className="roboto-condensed-light">
+                Shop to add to cart!
+              </div>
             </center>
           </>
         )}
