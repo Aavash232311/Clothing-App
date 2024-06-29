@@ -5,6 +5,7 @@ using ReactApp2.Server.Data;
 using ReactApp2.Server.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Drawing.Printing;
+using System.Linq;
 
 namespace ReactApp2.Server.Controllers
 {
@@ -44,7 +45,7 @@ namespace ReactApp2.Server.Controllers
     {
         public ApplicationDbContext context;
         public UserManager<ApplicationUser> userManager;
-        public string[] arr = { "not verified", "completed", "set to delivery" };
+        public string[] arr = { "not verified", "completed", "set to delivery", "cancel" };
         public Helper helper;
         public StaffController(ApplicationDbContext contexnt, UserManager<ApplicationUser> userManager)
         {
@@ -75,11 +76,11 @@ namespace ReactApp2.Server.Controllers
             }
             if (Array.IndexOf(arr, filter) == -1) { return new JsonResult(BadRequest()); }
             var orders = context.Checkouts
-                .OrderBy(x => x.CheckOutDate)
                 .Include(x => x.products)
                     .ThenInclude(p => p.product)
                 .Include(x => x.User)
-                .Where(x => x.Status == filter);
+                .Where(x => x.Status == filter)
+                .OrderByDescending(x => x.CheckOutDate);
             int RecordPerPage = 4;
             var Partition = orders.Skip((page - 1) * RecordPerPage).Take(RecordPerPage);
             return new JsonResult(Ok(new {page = (int)Math.Ceiling((double)orders.Count() / RecordPerPage), orders = Partition }));

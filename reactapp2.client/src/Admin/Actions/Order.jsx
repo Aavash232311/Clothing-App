@@ -4,7 +4,7 @@ import { NavItem, NavLink } from "reactstrap";
 import { Link } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import DownloadDoneOutlinedIcon from '@mui/icons-material/DownloadDoneOutlined';
+import DownloadDoneOutlinedIcon from "@mui/icons-material/DownloadDoneOutlined";
 import "../../static/order.css";
 // I could use google api for location but too bored for that
 const RupeeseIcon = () => {
@@ -45,6 +45,11 @@ class Order extends Component {
   }
   update(ev) {
     const { name, value } = ev.target;
+    if (name === "search" && value === '') {
+      this.setState({filter: "not verified", currentPage: 1}, () => {
+        this.fetchInitial();
+      })
+    }
     this.setState({ [name]: value });
   }
   updateStauts(ev, id) {
@@ -72,7 +77,11 @@ class Order extends Component {
       });
   }
   componentDidMount() {
+    // I dont want to make it complex by using web sockets so ill do long poling
     this.fetchInitial();
+    setInterval(() => {
+      this.fetchInitial();
+    }, 600000);
   }
   fetchInitial() {
     fetch(
@@ -100,13 +109,13 @@ class Order extends Component {
           this.setState({ orders: null });
           return;
         }
-        this.setState({ page, orders});
+        this.setState({ page, orders });
       });
   }
 
   makeSearch(ev) {
     ev.preventDefault();
-    const { search } = this.state;
+    const { search } = this.state;;
     fetch(`public/order-by-id?id=${search}`, {
       method: "get",
       credentials: "include",
@@ -137,9 +146,9 @@ class Order extends Component {
         range += 1;
       }
     }
-    this.setState({currentPage: range}, () => {
+    this.setState({ currentPage: range }, () => {
       this.fetchInitial();
-    })
+    });
   }
   render() {
     return (
@@ -168,16 +177,19 @@ class Order extends Component {
               <select
                 name="filter"
                 onInput={(ev) => {
-                  this.setState({filter: ev.target.value}, () => {
-                    this.fetchInitial();
+                  this.setState({ filter: ev.target.value }, () => {
+                    this.setState({ currentPage: 1 }, () => {
+                      this.fetchInitial();
+                    });
                   });
-                }} 
+                }}
                 defaultValue={this.state.filter}
                 className="form-control"
               >
                 <option value="not verified">not verified</option>
                 <option value="completed">completed</option>
                 <option value="set to delivery">set to delivery</option>
+                <option value="cancel">cancel</option>
               </select>
             </div>
           </div>
@@ -225,15 +237,16 @@ class Order extends Component {
                               className="view-ordered-products"
                               style={{ listStyle: "none" }}
                             >
-                                <div
-                                  onClick={() => {
-                                    window.open(
-                                      `/view?key=${product.id}`, "_blank");
-                                          
-                                  }}
-                                >
-                                  product link
-                                </div>
+                              <div
+                                onClick={() => {
+                                  window.open(
+                                    `/view?key=${product.id}`,
+                                    "_blank"
+                                  );
+                                }}
+                              >
+                                product link
+                              </div>
                             </div>
                           </th>
                           <td>
@@ -263,7 +276,7 @@ class Order extends Component {
         {this.state.orders !== null ? (
           <table className="table table-striped">
             <caption>
-              Orders: 
+              Orders:
               {this.state.page > 1 ? (
                 <>
                   Page: {this.state.currentPage}
@@ -357,6 +370,7 @@ class Order extends Component {
                           <option value="set to delivery">
                             set to delivery
                           </option>
+                          <option value="cancel">cancel</option>
                         </select>
                       </div>
                     </td>
