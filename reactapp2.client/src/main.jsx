@@ -13,6 +13,7 @@ import LoginCode from "./authentication/LoginCode.jsx";
 import View from "./Admin/public/View.jsx";
 import More from "./Admin/public/More.jsx";
 import { CartProvider } from "./Admin/public/cartContext.jsx";
+import { AuthProvider } from "./authentication/auth.jsx";
 import Bag from "./Admin/public/Cart.jsx";
 
 let router = [
@@ -60,7 +61,7 @@ let router = [
     path: "/chittychittybangbang",
     element: <Bag />,
     allowedRoles: [],
-  }
+  },
 ];
 
 // (RBAC) FOR UI, API IS SECURE AND INDEPENDENT OF CLIENT SIDE
@@ -75,8 +76,8 @@ let fitered = router.filter((i) => {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <CartProvider>
-      <RouterProvider router={createBrowserRouter(fitered)} />
-    </CartProvider>
+      <CartProvider>
+        <RouterProvider router={createBrowserRouter(fitered)} />
+      </CartProvider>
   </React.StrictMode>
 );

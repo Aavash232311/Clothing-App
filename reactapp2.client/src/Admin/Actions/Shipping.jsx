@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "../../static/ship.css";
 
+
 class Shipping extends Component {
   state = {
     charge: null,
@@ -26,6 +27,7 @@ class Shipping extends Component {
         const { deliveryAmount } = value;
         this.setState({ charge: deliveryAmount });
       });
+    // load orders
   }
   update(ev) {
     const { name, value } = ev.target;

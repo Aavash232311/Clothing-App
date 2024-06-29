@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<ApplicationUser>(options => options.SignIn.RequireConfirmedEmail = true)
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>(options => options.SignIn.RequireConfirmedEmail = false) // later in production set it to true
      .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
      .AddDefaultTokenProviders();

@@ -32,7 +32,6 @@ namespace ReactApp2.Server.Controllers
         }
 
         [Route("getClient")]
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetUserInfo()
         {

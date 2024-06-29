@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Packaging;
 using ReactApp2.Server.Data;
 using ReactApp2.Server.Models;
 using System.ComponentModel.DataAnnotations;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using System.Drawing.Printing;
 
 namespace ReactApp2.Server.Controllers
 {
@@ -46,12 +44,45 @@ namespace ReactApp2.Server.Controllers
     {
         public ApplicationDbContext context;
         public UserManager<ApplicationUser> userManager;
+        public string[] arr = { "not verified", "completed", "set to delivery" };
         public Helper helper;
         public StaffController(ApplicationDbContext contexnt, UserManager<ApplicationUser> userManager)
         {
             this.context = contexnt;
             this.userManager = userManager;
             this.helper = new Helper();
+        }
+        [Route("order-status")]
+        [HttpGet]
+        public async Task<IActionResult> OrderStatus(string status, Guid id)
+        {
+            // not verified completed set to delivery
+            if (Array.IndexOf(arr, status) == -1) { return new JsonResult(BadRequest()); }
+            var getCheckout = context.Checkouts.Where(x => x.Id == id).FirstOrDefault();
+            if (getCheckout == null) { return new JsonResult(BadRequest()); }
+            getCheckout.Status = status;
+            await context.SaveChangesAsync();
+            return new JsonResult(Ok());
+        }
+
+        [Route("load-orders")]
+        [HttpGet]
+        public IActionResult LoadOrders(int page, string filter)
+        {
+            if (page <= 0)
+            {
+                return BadRequest(new { message = "page cannot be less than or equal to 0" });
+            }
+            if (Array.IndexOf(arr, filter) == -1) { return new JsonResult(BadRequest()); }
+            var orders = context.Checkouts
+                .OrderBy(x => x.CheckOutDate)
+                .Include(x => x.products)
+                    .ThenInclude(p => p.product)
+                .Include(x => x.User)
+                .Where(x => x.Status == filter);
+            int RecordPerPage = 4;
+            var Partition = orders.Skip((page - 1) * RecordPerPage).Take(RecordPerPage);
+            return new JsonResult(Ok(new {page = (int)Math.Ceiling((double)orders.Count() / RecordPerPage), orders = Partition }));
         }
         [Route("set-delivery-charge")]
         [HttpPut] 

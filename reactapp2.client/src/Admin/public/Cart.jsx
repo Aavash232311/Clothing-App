@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Nav from "../../Nav";
 import "../../static/cart.css";
 import CartContext from "./cartContext";
+import Services from "../../utils/utils";
 class Bag extends Component {
   state = {
     product: null,
@@ -13,6 +14,7 @@ class Bag extends Component {
     super(props);
     this.update = this.update.bind(this);
     this.submit = this.submit.bind(this);
+    this.service = new Services();
   }
   static contextType = CartContext;
   componentDidMount() {
@@ -22,6 +24,7 @@ class Bag extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.service.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())
@@ -62,6 +65,7 @@ class Bag extends Component {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${this.service.getToken()}`,
         },
         body: JSON.stringify(this.state),
       })
@@ -70,6 +74,7 @@ class Bag extends Component {
         })
         .then((response) => {
           const { statusCode } = response;
+          console.log(response);
           if (statusCode === 200) {
             destructiveState();
             this.setState({

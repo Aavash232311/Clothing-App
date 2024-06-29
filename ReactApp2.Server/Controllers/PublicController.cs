@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using ReactApp2.Server.Data;
 using ReactApp2.Server.Models;
+using System.Drawing;
 
 namespace ReactApp2.Server.Controllers
 {
@@ -32,9 +36,18 @@ namespace ReactApp2.Server.Controllers
     public class PublicController : ControllerBase
     {
         public ApplicationDbContext context;
-        public PublicController(ApplicationDbContext context)
+        public UserManager<ApplicationUser> userManager;
+        public PublicController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             this.context = context;
+            this.userManager = userManager;
+        }
+        [Route("order-by-id")]
+        [HttpGet]
+        public IActionResult OrderGet(Guid id)
+        {
+            var getOrder = context.Checkouts.Where(x => x.Id == id).FirstOrDefault();
+            return new JsonResult(Ok(getOrder));
         }
         [Route("deliveryCharge")]
         [HttpGet]
@@ -44,19 +57,32 @@ namespace ReactApp2.Server.Controllers
         }
         // later after fixing bug in auth add authorize 
         [Route("checkout-product")]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CheckOutPorudct(SearlizedCheckout CheckOutProduct)
         {
             decimal Total = 0;
-            List <Product> product = new List<Product>();
+            List <ProductCheck> product = new List<ProductCheck>();
+            var user = await userManager.GetUserAsync(HttpContext.User) as ApplicationUser;
+            if (user == null)
+            {
+                return Unauthorized(new { message = "Unauthorized access." });
+            }
             foreach (var  i in CheckOutProduct.CheckOutProducts)
             {
                 // since we don't want to be dependent upon prcie for frontend
                 var getProduct = context.Products.Where(x => x.Id == i.ProductId).FirstOrDefault();
                 if (getProduct == null) { return new JsonResult(BadRequest(new { message = "something went wrong :(" })); }
                 Total += getProduct.Price * i.qty;
-                product.Add(getProduct);
-                i.totalPrice = getProduct.Price * i.qty;
+
+                product.Add(new ProductCheck
+                {
+                    qty = i.qty,
+                    totalPrice = getProduct.Price * i.qty,
+                    size = i.size,
+                    user = user,
+                    product = getProduct
+                });
                 var additionalCharge = context.Deliveries.FirstOrDefault();
                 if (additionalCharge != null)
                 {
@@ -71,7 +97,9 @@ namespace ReactApp2.Server.Controllers
                 Province = CheckOutProduct.Province,
                 Street = CheckOutProduct.Street,
                 Status = "not verified",
-                NetTotalAmount = Total
+                NetTotalAmount = Total,
+                products = product,
+                User = user
             };
             context.Checkouts.Add(checkout);
             await context.SaveChangesAsync();

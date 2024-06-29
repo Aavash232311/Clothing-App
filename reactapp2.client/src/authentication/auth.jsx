@@ -1,11 +1,10 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useContext } from "react";
 const AuthContext = createContext(undefined);
 
 export default AuthContext;
-
+export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const authToken = localStorage.getItem("authToken");
-
   const [user, setUser] = useState(() => (authToken ? authToken : null));
   const logOut = () => {
     localStorage.removeItem("authToken");
@@ -39,6 +38,7 @@ export const AuthProvider = ({ children }) => {
       }).then((rsp) => rsp.json()).then((response) => {
         const {statusCode, value} = response;
         if (statusCode === 200) {
+          console.log(value);
           localStorage.setItem("permissionClass", value[0]);
         }
       })

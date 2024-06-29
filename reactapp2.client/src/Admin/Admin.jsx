@@ -6,6 +6,7 @@ import Category from "./Actions/Category";
 import Degisn from "./Actions/Degisn";
 import Product from "./Actions/Product";
 import Shipping from "./Actions/Shipping";
+import Order from "./Actions/Order";
 import "../static/admin.css";
 
 const navContent = [
@@ -82,6 +83,8 @@ function AdminDashboard() {
         return <Product />;
       case "Shipping":
         return <Shipping />;
+      case "Order":
+        return <Order />
     }
   };
 

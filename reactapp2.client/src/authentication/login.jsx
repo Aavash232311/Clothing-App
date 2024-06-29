@@ -51,9 +51,7 @@ export default function Login() {
                 if (rsp !== true) {
                   setError("username or password incorrect");
                 } else {
-                  setTimeout(() => {
-                    window.location.href = "/";
-                  }, 500);
+                  window.location.href = "/";
                 }
               });
             }
@@ -165,6 +163,6 @@ export default function Login() {
           );
         }}
       </AuthContext.Consumer>
-    </AuthProvider>
+     </AuthProvider>
   );
 }
