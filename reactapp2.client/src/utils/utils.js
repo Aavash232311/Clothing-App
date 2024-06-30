@@ -14,6 +14,9 @@ export default class Services {
   getToken() {
     return localStorage.getItem("authToken");
   }
+  getRefreshToken() {
+    return localStorage.getItem("refreshToken");
+  }
   date(datetimeString) {
     const date = new Date(datetimeString);
     const options = {
@@ -26,5 +29,30 @@ export default class Services {
       hour12: false, // Use 24-hour format
     };
     return date.toLocaleDateString("en-US", options);
+  }
+  async refreshToken() {
+    const refreshUrl = "/refresh/";
+
+    try {
+      const response = await fetch(refreshUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.getToken()}`,
+        },
+        body: JSON.stringify({
+          refreshToken: this.getRefreshToken(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to refresh token");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error refreshing token: ", error.message);
+      throw error;
+    }
   }
 }

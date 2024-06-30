@@ -73,6 +73,7 @@ class Order extends Component {
         }
         if (statusCode === 200) {
           ev.target.value = value;
+          this.fetchInitial(); // re-render with same paramater
         }
       });
   }
@@ -216,7 +217,6 @@ class Order extends Component {
                   <thead>
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Id</th>
                       <th scope="col">Link</th>
                       <th scope="col">image</th>
                       <th scope="col">Name</th>
@@ -231,7 +231,6 @@ class Order extends Component {
                       return (
                         <tr key={i.id}>
                           <th scope="row">{j + 1}</th>
-                          <th>{i.id}</th>
                           <th>
                             <div
                               className="view-ordered-products"

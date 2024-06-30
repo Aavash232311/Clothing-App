@@ -78,16 +78,16 @@ button:focus-visible {
 
 #bottom-category {
   display: grid;
-  grid-template-columns: repeat(5, minmax(110px, auto));
+  grid-template-columns: repeat(5, minmax(95px, auto));
   margin-top: 2px;
-  width: 20%;
+  width: 40%;
   float: left;
   justify-content: center;
-  height: 20px;
-  margin-left: 30%;
+  height: 50px;
   font-weight: bolder;
   font-family: "Kanit", sans-serif;
   cursor: pointer;
+  margin-left: 15%;
 }
 
 .bottom-category-labels {

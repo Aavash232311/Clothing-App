@@ -60,6 +60,7 @@ export default defineConfig({
         proxy: {
             '^/login': commonTarget,
             "^/register": commonTarget,
+            "^/refresh": commonTarget,
             '^/general': commonTarget,
             '^/admin': commonTarget,
             "^/staff": commonTarget,
