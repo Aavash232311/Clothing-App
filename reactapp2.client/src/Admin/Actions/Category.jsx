@@ -8,11 +8,14 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Services from "../../utils/utils";
+
 // todo: authorization token once auth related thing is solved
 export default class Category extends Component {
   constructor(props) {
     super(props);
     this.Search = this.Search.bind(this);
+    this.services = new Services();
   }
   state = {
     parent: "",
@@ -30,6 +33,7 @@ export default class Category extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())
@@ -56,6 +60,7 @@ export default class Category extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((res) => res.json())
@@ -94,6 +99,7 @@ export default class Category extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
       body: JSON.stringify(this.state),
     })
@@ -115,6 +121,7 @@ export default class Category extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())
@@ -135,6 +142,7 @@ export default class Category extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
       body: JSON.stringify(this.state),
     })
@@ -152,7 +160,7 @@ export default class Category extends Component {
   Search(ev) {
     if (ev.keyCode === 13) {
       const { value } = ev.target;
-        this.searchParent(value, "search");
+      this.searchParent(value, "search");
     }
   }
   render() {
@@ -216,7 +224,7 @@ export default class Category extends Component {
                 }}
                 autoComplete="off"
               />
-              <hr style={{visibility: "hidden"}} />
+              <hr style={{ visibility: "hidden" }} />
               <input
                 placeholder="parent"
                 className="category-labels classical-input"
@@ -247,10 +255,10 @@ export default class Category extends Component {
               name="search"
               onKeyDown={this.Search}
               onInput={(ev) => {
-                const {value} = ev.target;
+                const { value } = ev.target;
                 if (value === "") {
                   this.loadInitial();
-                } 
+                }
               }}
               autoComplete="off"
             />
@@ -339,7 +347,11 @@ export default class Category extends Component {
                   onInput={(ev) => {
                     this.getParent(ev, "edit");
                   }}
-                  defaultValue={this.state.editAction.parent === null ? "" : this.state.editAction.parent["productCategory"]}
+                  defaultValue={
+                    this.state.editAction.parent === null
+                      ? ""
+                      : this.state.editAction.parent["productCategory"]
+                  }
                   placeholder="parent"
                   name="parent"
                   id="edit-parent"

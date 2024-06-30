@@ -19,6 +19,7 @@ namespace ReactApp2.Server.Controllers
         public int code { get; set; }
     }
     [Route("[controller]")]
+    [Authorize]
     [ApiController]
     public class GeneralController : ControllerBase
     {

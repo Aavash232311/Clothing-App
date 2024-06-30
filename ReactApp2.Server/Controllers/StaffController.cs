@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReactApp2.Server.Data;
@@ -54,6 +55,7 @@ namespace ReactApp2.Server.Controllers
             this.helper = new Helper();
         }
         [Route("order-status")]
+        [Authorize(Roles = "superuser, staff")]
         [HttpGet]
         public async Task<IActionResult> OrderStatus(string status, Guid id)
         {
@@ -67,6 +69,7 @@ namespace ReactApp2.Server.Controllers
         }
 
         [Route("load-orders")]
+        [Authorize(Roles = "superuser, staff")]
         [HttpGet]
         public IActionResult LoadOrders(int page, string filter)
         {
@@ -86,6 +89,7 @@ namespace ReactApp2.Server.Controllers
             return new JsonResult(Ok(new {page = (int)Math.Ceiling((double)orders.Count() / RecordPerPage), orders = Partition }));
         }
         [Route("set-delivery-charge")]
+        [Authorize(Roles = "superuser, staff")]
         [HttpPut] 
         public async Task<IActionResult> SetDeliveryCharge(decimal charge)
         {
@@ -96,6 +100,7 @@ namespace ReactApp2.Server.Controllers
             return new JsonResult(Ok());
         }
         [Route("addHomePageCategory")]
+        [Authorize(Roles = "superuser, staff")]
         [HttpGet]
         public async Task<IActionResult> AddHomePageCategory(string id, string action)
         {
@@ -128,6 +133,7 @@ namespace ReactApp2.Server.Controllers
         }
 
         [Route("getHomePageCategory")] // make this one public
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetCategory()
         {
@@ -137,6 +143,7 @@ namespace ReactApp2.Server.Controllers
 
         [HttpPost]
         [Route("saveSlotsHomePage")]
+        [Authorize(Roles = "superuser, staff")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> PostFeatured([FromForm] FeaturedDto featuredDto)
         {
@@ -163,6 +170,7 @@ namespace ReactApp2.Server.Controllers
             return new JsonResult(Ok());
         }
         [Route("deleteSlots")]
+        [Authorize(Roles = "superuser, staff")]
         [HttpGet]
         public async Task<IActionResult> DeleteSlots(int id)
         {
@@ -179,6 +187,7 @@ namespace ReactApp2.Server.Controllers
             return new JsonResult(Ok());
         }
         [Route("getSlotsHomePage")]
+        [Authorize(Roles = "superuser, staff")]
         [HttpGet]
         public IActionResult GetCategoryLoad() // public
         {
@@ -188,6 +197,7 @@ namespace ReactApp2.Server.Controllers
         }
         [HttpPut]
         [Route("updateSlotsHomePage/{id}")]
+        [Authorize(Roles = "superuser, staff")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> UpdateFeatured(int id, [FromForm] FeaturedDto featuredDto)
         {
@@ -228,6 +238,7 @@ namespace ReactApp2.Server.Controllers
         }
         [HttpPut]
         [Route("complex-form")]
+        [Authorize(Roles = "superuser, staff")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> DynamicFormProballyWillHurt([FromForm] ProductSear productSearlized)
         {
@@ -270,6 +281,7 @@ namespace ReactApp2.Server.Controllers
             return new JsonResult(Ok(product));
         }
         [Route("get-procuts")]
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetProductByName(string name)
         {
@@ -277,6 +289,7 @@ namespace ReactApp2.Server.Controllers
             return new JsonResult(Ok(result));
         }
         [Route("add-theme-product")]
+        [Authorize(Roles = "superuser, staff")]
         [HttpGet]
         public async Task<IActionResult> AddFeaturedProducts(int themeId, string productId)
         {
@@ -306,6 +319,7 @@ namespace ReactApp2.Server.Controllers
             }
         }
         [Route("get-temed-product")]
+        [Authorize(Roles = "superuser, staff")]
         [HttpGet]
         public IActionResult GetProductsTeme(int themeId)
         {
@@ -313,6 +327,7 @@ namespace ReactApp2.Server.Controllers
             return new JsonResult(Ok(getThemeProducts));
         }
         [Route("delete-theme-product")]
+        [Authorize(Roles = "superuser, staff")]
         [HttpGet]
         public async Task<IActionResult> DeleteThemedProcuts(int themeId, string productId)
         {

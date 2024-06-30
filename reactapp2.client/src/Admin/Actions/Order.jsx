@@ -1,10 +1,7 @@
 import React, { Component } from "react";
 import Services from "../../utils/utils";
-import { NavItem, NavLink } from "reactstrap";
-import { Link } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import DownloadDoneOutlinedIcon from "@mui/icons-material/DownloadDoneOutlined";
 import "../../static/order.css";
 // I could use google api for location but too bored for that
 const RupeeseIcon = () => {
@@ -35,7 +32,7 @@ class Order extends Component {
   };
   constructor(props) {
     super(props);
-    this.service = new Services();
+    this.services = new Services();
     this.updateStauts = this.updateStauts.bind(this);
     this.fetchInitial = this.fetchInitial.bind(this);
     this.update = this.update.bind(this);
@@ -60,6 +57,7 @@ class Order extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((r) => {
@@ -93,6 +91,7 @@ class Order extends Component {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${this.services.getToken()}`,
         },
       }
     )
@@ -122,6 +121,7 @@ class Order extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((r) => {
@@ -351,7 +351,7 @@ class Order extends Component {
                         view
                       </div>
                     </td>
-                    <td>{this.service.date(i.checkOutDate)}</td>
+                    <td>{this.services.date(i.checkOutDate)}</td>
                     <td>
                       <RupeeseIcon /> {i.netTotalAmount}
                     </td>

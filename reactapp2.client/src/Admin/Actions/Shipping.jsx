@@ -1,6 +1,6 @@
 import React, { Component } from "react";
+import Services from "../../utils/utils";
 import "../../static/ship.css";
-
 
 class Shipping extends Component {
   state = {
@@ -11,6 +11,7 @@ class Shipping extends Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.setDelivaryCharge = this.setDelivaryCharge.bind(this);
     this.update = this.update.bind(this);
+    this.services = new Services();
   }
   componentDidMount() {
     fetch("public/deliveryCharge", {
@@ -42,6 +43,7 @@ class Shipping extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())

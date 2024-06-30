@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { IoIosAdd } from "react-icons/io";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import Services from "../../utils/utils";
 import "../../static/product.css";
 
 class ProductForm extends Component {
@@ -21,6 +22,7 @@ class ProductForm extends Component {
     this.deleteCategory = this.deleteCategory.bind(this);
     this.addSize = this.addSize.bind(this);
     this.deleteSize = this.deleteSize.bind(this);
+    this.services = new Services();
   }
   state = {
     n: 1,
@@ -99,6 +101,9 @@ class ProductForm extends Component {
       });
       fetch("staff/complex-form", {
         method: "PUT",
+        headers: {
+          Authorization: `Bearer ${this.services.getToken()}`,
+        },
         body: formData,
       })
         .then((rsp) => rsp.json())
@@ -121,6 +126,7 @@ class ProductForm extends Component {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${this.services.getToken()}`,
         },
       })
         .then((rsp) => rsp.json())

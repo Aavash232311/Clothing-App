@@ -11,6 +11,7 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import Services from "../../utils/utils";
 // todo: assign auth header for all fetch request
 // todo: in category page until and unless the user refreshes dont fetch new result
 
@@ -23,6 +24,7 @@ class AddProcutToTheme extends Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.deleteThemeProduct = this.deleteThemeProduct.bind(this);
     this.loadThemedProduct = this.loadThemedProduct.bind(this);
+    this.services = new Services();
   }
 
   state = {
@@ -41,6 +43,7 @@ class AddProcutToTheme extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())
@@ -51,7 +54,6 @@ class AddProcutToTheme extends Component {
         }
       });
   }
-  
 
   loadThemedProduct() {
     // load added products to the theme
@@ -60,6 +62,7 @@ class AddProcutToTheme extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())
@@ -84,6 +87,7 @@ class AddProcutToTheme extends Component {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${this.services.getToken()}`,
         },
       }
     )
@@ -106,6 +110,7 @@ class AddProcutToTheme extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())
@@ -235,6 +240,7 @@ class AddSlotImages extends Component {
     this.deleteSlots = this.deleteSlots.bind(this);
     this.updateSlots = this.updateSlots.bind(this);
     this.cancelAddThemePorudct = this.cancelAddThemePorudct.bind(this);
+    this.services = new Services();
   }
 
   cancelAddThemePorudct() {
@@ -247,6 +253,7 @@ class AddSlotImages extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())
@@ -276,6 +283,9 @@ class AddSlotImages extends Component {
     fetch("/staff/saveSlotsHomePage", {
       method: "post",
       credentials: "include",
+      headers: {
+        Authorization: `Bearer ${this.services.getToken()}`,
+      },
       body: formData,
     })
       .then((rsp) => rsp.json())
@@ -294,6 +304,7 @@ class AddSlotImages extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())
@@ -316,6 +327,9 @@ class AddSlotImages extends Component {
     fetch(`/staff/updateSlotsHomePage/${this.state.tweak.id}`, {
       method: "PUT",
       credentials: "include",
+      headers: {
+        Authorization: `Bearer ${this.services.getToken()}`,
+      },
       body: formData,
     })
       .then((rsp) => {
@@ -382,7 +396,7 @@ class AddSlotImages extends Component {
           </button>
         </form>
         <hr style={{ visibility: "hiddern" }} />
-        {this.state.slots != null? (
+        {this.state.slots != null ? (
           <>
             <TableContainer
               sx={{ width: "90%", float: "left", m: 1 }}
@@ -548,6 +562,7 @@ export default class Degisn extends Component {
     this.mark = this.mark.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
     this.loadInitial = this.loadInitial.bind(this);
+    this.services = new Services();
   }
   state = {
     search: null,
@@ -561,6 +576,7 @@ export default class Degisn extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())
@@ -591,6 +607,7 @@ export default class Degisn extends Component {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${this.services.getToken()}`,
       },
     })
       .then((rsp) => rsp.json())
@@ -622,6 +639,7 @@ export default class Degisn extends Component {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${this.services.getToken()}`,
         },
       }
     )

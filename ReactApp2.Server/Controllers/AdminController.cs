@@ -16,6 +16,7 @@ namespace ReactApp2.Server.Controllers
 
     [Route("[controller]")]
     [ApiController]
+    [Authorize(Roles = "superuser, staff")]
     public class AdminController : ControllerBase
     {
         ApplicationDbContext context;
