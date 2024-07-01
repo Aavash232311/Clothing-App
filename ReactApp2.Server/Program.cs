@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using ReactApp2.Server.Services;
 using ReactApp2.Server.Models;
 using Microsoft.Extensions.FileProviders;
+using ReactApp2.Server;
+using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<ApplicationUser>(options => options.SignIn.RequireConfirmedEmail = false) // later in production set it to true
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>(options => options.SignIn.RequireConfirmedEmail = true) // later in production set it to true
      .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
      .AddDefaultTokenProviders();
@@ -24,7 +27,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 builder.Services.AddScoped<UserManager<ApplicationUser>, CustomUserManager<ApplicationUser>>();
 
-
+builder.Services.AddSingleton<Helper>();
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
 var app = builder.Build();
 app.MapIdentityApi<ApplicationUser>();

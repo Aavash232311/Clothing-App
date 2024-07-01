@@ -14,6 +14,7 @@ import View from "./Admin/public/View.jsx";
 import More from "./Admin/public/More.jsx";
 import { CartProvider } from "./Admin/public/cartContext.jsx";
 import { AuthProvider } from "./authentication/auth.jsx";
+import Services from "./utils/utils.js";
 import Bag from "./Admin/public/Cart.jsx";
 
 let router = [
@@ -65,6 +66,28 @@ let router = [
 ];
 
 // (RBAC) FOR UI, API IS SECURE AND INDEPENDENT OF CLIENT SIDE
+var services = new Services();
+const rt = localStorage.getItem("refreshToken");
+const at = localStorage.getItem("authToken");
+if (at != null && rt != null) {
+  const refresh = () => {
+    services
+      .refreshToken()
+      .then((dat) => {
+        const { accessToken, refreshToken } = dat;
+        localStorage.setItem("authToken", accessToken);
+        localStorage.setItem("refreshToken", refreshToken);
+      })
+      .catch((err) => {
+        console.error("Failed to refresh token: ", err);
+      });
+  };
+  refresh();
+  // lets add a mechanism to refresh out token on the interval of 36000s = 1hr
+  // we can't exactly do 1 hr because
+  // nothing in this world is real time even the light
+  setInterval(refresh, 55 * 60 * Math.pow(10, 3));
+}
 
 let fitered = router.filter((i) => {
   const roleArray = i.allowedRoles;
@@ -76,8 +99,8 @@ let fitered = router.filter((i) => {
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-      <CartProvider>
-        <RouterProvider router={createBrowserRouter(fitered)} />
-      </CartProvider>
+    <CartProvider>
+      <RouterProvider router={createBrowserRouter(fitered)} />
+    </CartProvider>
   </React.StrictMode>
 );

@@ -187,7 +187,7 @@ namespace ReactApp2.Server.Controllers
             return new JsonResult(Ok());
         }
         [Route("getSlotsHomePage")]
-        [Authorize(Roles = "superuser, staff")]
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetCategoryLoad() // public
         {

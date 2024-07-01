@@ -37,6 +37,8 @@ namespace ReactApp2.Server.Controllers
         public async Task<IActionResult> GetUserInfo()
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            // we need to make some abstraction
+            // the info we might be giving is password hash and otp 
             return new JsonResult(Ok(user));
         }
         [Route("getRls")]
@@ -51,19 +53,18 @@ namespace ReactApp2.Server.Controllers
             return new JsonResult(Ok(userRole));
         }
         [Route("activate")]
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> ActivateAccount(Email userInfo)
         {
-            ApplicationUser? user = await _userManager.FindByEmailAsync(userInfo.mail);
-            if (user != null)
+            var user = await _userManager.FindByEmailAsync(userInfo.mail) as ApplicationUser;
+            if (user == null) { return new JsonResult(BadRequest(new {message = "No"})); }
+            int code = userInfo.code;
+            if (code == user.EmailConformCode)
             {
-                Console.WriteLine((user.EmailConformCode + " " + userInfo));
-                if (userInfo.code == user.EmailConformCode)
-                {
-                    user.EmailConfirmed = true;
-                    await _userManager.UpdateAsync(user);
-                    return new JsonResult(Ok());
-                }
+                user.EmailConfirmed = true;
+                await context.SaveChangesAsync();
+                return new JsonResult(Ok());
             }
             return new JsonResult(BadRequest());
         }

@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("authToken");
     window.location.reload();
   };
+
   const logIn = async (username, password) => {
     let data = await fetch("/login/", {
       method: "post",
@@ -31,21 +32,6 @@ export const AuthProvider = ({ children }) => {
     if (data.accessToken !== undefined) {
       localStorage.setItem("authToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
-      // lets add a mechanism to refresh out token on the interval of 36000s = 1hr
-      // we can't exactly do 1 hr because
-      // nothing in this world is real time even the light
-      setInterval(() => {
-        services
-          .refreshToken()
-          .then((dat) => {
-            const { accessToken, refreshToken } = dat;
-            localStorage.setItem("authToken", accessToken);
-            localStorage.setItem("refreshToken", refreshToken);
-          })
-          .catch((err) => {
-            console.error("Failed to refresh token: ", err);
-          });
-      }, 55 * 60 * Math.pow(10, 3));
       
       fetch("/general/getRls", {
         method: "get",
@@ -74,7 +60,7 @@ export const AuthProvider = ({ children }) => {
   let methods = {
     user: user,
     logOut: logOut,
-    logIn: logIn,
+    logIn: logIn
   };
 
   return (

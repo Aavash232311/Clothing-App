@@ -1,4 +1,5 @@
 export default class Services {
+  // most explicit level of comopoene and in the case of page load refresh that token
   async getUser() {
     const data = await fetch("/general/getClient", {
       method: "get",
