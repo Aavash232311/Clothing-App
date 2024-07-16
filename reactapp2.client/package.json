@@ -11,12 +11,15 @@
     "postinstall": "cd ./src/Admin/material-kit-react && npm install"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "^8.0.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.14",
     "@mui/joy": "^5.0.0-beta.36",
     "@mui/material": "^5.15.18",
     "bootstrap": "^5.3.3",
+    "ckeditor5": "^42.0.0",
+    "ckeditor5-premium-features": "^42.0.0",
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "localforage": "^1.10.0",

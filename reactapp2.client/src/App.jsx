@@ -95,7 +95,7 @@ function App() {
       ) : null}
       {recentProduct != null && recentProduct.length > 0 ? (
         <>
-          <div className="roboto-condensed">Recently added</div>
+          <div style={{float: "left"}} className="roboto-condensed">Recently added</div>
           <div
             style={{ listStyle: "none" }}
             className="n-slorts-home"

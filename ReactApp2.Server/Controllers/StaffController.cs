@@ -1,43 +1,63 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using ReactApp2.Server.Data;
 using ReactApp2.Server.Models;
 using System.ComponentModel.DataAnnotations;
-using System.Drawing.Printing;
-using System.Linq;
-
 namespace ReactApp2.Server.Controllers
 {
 
     public class FeaturedDto
     {
-        [MaxLength(50)]
-        [Required]
         public string Name { get; set; } = string.Empty;
-
-        [MaxLength(3000)]
-        [Required]
         public string Link { get; set; } = string.Empty;
-
-        [MaxLength(100)]
-        [Required]
         public string Theme { get; set; } = string.Empty;
         public IFormFile? Image { get; set; }
     }
-
-    public class ProductSear
+    public class ProductSub
     {
         public string Name { get; set; } = string.Empty;
         public decimal Price { get; set; }
+        public string? Brand { get; set; } = string.Empty;
         public decimal Discount { get; set; }
-        public string Brand { get; set; } = string.Empty;
-        public List<String> AvalibleSize { get; set; } = new List<String>();
-        public List<String>? addedCategory { get; set; } = new List<String>();
         public string Description { get; set; } = string.Empty;
-        public IFormFile[]? image { get; set; }
-        public string gender { get; set; } = string.Empty;
+        public string? Gender { get; set; } = string.Empty;
+        public IFormFile[]? Images { get; set; }
+        public string? ShippingNotes { get; set; } = string.Empty;
+        public string? WarrantyInfo { get; set; } = string.Empty;
+        public int Length { get; set; } = 0;
+        public int Height { get; set; } = 0;
+        public int Breadth { get; set; } = 0;
+        public string? SKU { get; set; } = string.Empty;
+        public Guid Category { get; set; }
+        public List<String> Tags { get; set; } = new List<String>();
+        public bool InStock { get; set; } = false;
+    }
+
+    public class OptionsStructureSearlized
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Image { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public decimal Price { get; set; }
+        public string type { get; set; } = string.Empty;
+    }
+
+    public class OverAllFormProduct {
+        public ProductSub product { get; set; }
+        public List<OptionStructureSear>? options { get; set; }
+    }
+
+    public class OptionStructureSear
+    {
+        public string Name { get; set; } = string.Empty;
+        public IFormFile? Image { get; set; }
+        public string? Description { get; set; } = string.Empty;
+        public string? Price { get; set; } = string.Empty;
+        public string type { get; set; } = string.Empty;
     }
 
     [Route("[controller]")]
@@ -54,6 +74,103 @@ namespace ReactApp2.Server.Controllers
             this.userManager = userManager;
             this.helper = new Helper();
         }
+        [Route("complex-product-form")]
+        [Authorize(Roles = "superuser, staff")]
+        [HttpPut]
+        public async Task<IActionResult> SubmitPorudct([FromForm] OverAllFormProduct sear)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            ProductSub? productFromFrontEnd = sear.product;
+            var optionsFromFrontEnd = sear.options;
+            if (productFromFrontEnd == null) return new JsonResult(BadRequest());
+            List<String> SavedImages = new List<String>();
+            // save product image
+
+            foreach (var  img in productFromFrontEnd.Images)
+            {
+                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "images", img.FileName);
+                var contentType = img.ContentType;
+                var isImage = contentType.StartsWith("image/");
+                if (!isImage) { return new JsonResult(BadRequest(new {errors = "Unsupported file"})); }
+                using (var stream = new FileStream(imagePath, FileMode.Create))
+                {
+                    await img.CopyToAsync(stream);
+                }
+                // images folder in the server is all the public images
+                SavedImages.Add(Path.Combine("images", img.FileName));
+            }
+            Guid categoryId = productFromFrontEnd.Category;
+            var getCategory = context.Categories.Where(x => x.Id == categoryId).FirstOrDefault();
+            var user = await this.userManager.GetUserAsync(HttpContext.User);
+            if (getCategory == null) return new JsonResult(BadRequest(new { errors = "Invalid entry for category" }));
+            List<OptionsStructure> optionStructure = new List<OptionsStructure>();
+            if (optionsFromFrontEnd != null)
+            { 
+                foreach (var i in optionsFromFrontEnd)
+                {
+                    // since we are iterating over that options
+                    // first we need to save iamges in stream then 
+                    var img = i.Image;
+                    var ImagePathInServer = string.Empty;
+                    if (img != null)
+                    {
+                        var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "images", img.FileName);
+                        var contentType = img.ContentType;
+                        var isImage = contentType.StartsWith("image/");
+                        if (!isImage) { return new JsonResult(BadRequest(new { errors = "Unsupported file" })); }
+                        using (var stream = new FileStream(imagePath, FileMode.Create))
+                        {
+                            await img.CopyToAsync(stream);
+                        }
+                        ImagePathInServer = Path.Combine("images", img.FileName);
+                    }
+                    decimal OptionPrice;
+                    try
+                    {
+                        OptionPrice = decimal.Parse(i.Price);
+                    }catch (Exception EX)
+                    {
+                        OptionPrice = 0;
+                    }
+                    var optionInstance = new OptionsStructure()
+                    {
+                        Name = i.Name,
+                        Image = ImagePathInServer,
+                        Description = i.Description,
+                        Price = OptionPrice,
+                        type = i.type
+                    };
+                    optionStructure.Add(optionInstance);
+                }
+            }
+            context.Products.Add(new Product
+            {
+                Name = productFromFrontEnd.Name,
+                SKU = productFromFrontEnd.SKU,
+                Brand = productFromFrontEnd.Brand,
+                Price = productFromFrontEnd.Price,
+                Images = SavedImages,
+                Description = productFromFrontEnd.Description,
+                Gender = productFromFrontEnd.Gender,
+                ShippingNotes = productFromFrontEnd.ShippingNotes,
+                WarrantyInfo = productFromFrontEnd.WarrantyInfo,
+                InStock = productFromFrontEnd.InStock,
+                Length = productFromFrontEnd.Length,
+                Height = productFromFrontEnd.Height,
+                Breadth = productFromFrontEnd.Breadth,
+                Tags = productFromFrontEnd.Tags,
+                Category = getCategory,
+                User = user,
+                Options = optionStructure,
+                Discount = productFromFrontEnd.Discount
+            });
+            await context.SaveChangesAsync();
+            return new JsonResult(Ok(sear));
+        }
+
         [Route("order-status")]
         [Authorize(Roles = "superuser, staff")]
         [HttpGet]
@@ -82,6 +199,8 @@ namespace ReactApp2.Server.Controllers
                 .Include(x => x.products)
                     .ThenInclude(p => p.product)
                 .Include(x => x.User)
+                .Include(p => p.products)
+                .ThenInclude(O => O.option)
                 .Where(x => x.Status == filter)
                 .OrderByDescending(x => x.CheckOutDate);
             int RecordPerPage = 4;
@@ -236,7 +355,7 @@ namespace ReactApp2.Server.Controllers
             await context.SaveChangesAsync();
             return new JsonResult(Ok());
         }
-        [HttpPut]
+    /*    [HttpPut]
         [Route("complex-form")]
         [Authorize(Roles = "superuser, staff")]
         [Consumes("multipart/form-data")]
@@ -261,8 +380,9 @@ namespace ReactApp2.Server.Controllers
                 }
                 // images folder in the server is all the public images
                 SavedImages.Add(Path.Combine("images", img.FileName));
-            }   
-            if (productSearlized.addedCategory == null || productSearlized.addedCategory.Count() == 0) {
+            }
+            if (productSearlized.addedCategory == null || productSearlized.addedCategory.Count() == 0)
+            {
                 return new JsonResult(BadRequest("Category cannot be null"));
             }
             var product = new Product
@@ -279,7 +399,7 @@ namespace ReactApp2.Server.Controllers
             context.Products.Add(product);
             await context.SaveChangesAsync();
             return new JsonResult(Ok(product));
-        }
+        }*/
         [Route("get-procuts")]
         [AllowAnonymous]
         [HttpGet]

@@ -4,14 +4,14 @@ import { CiBellOn } from "react-icons/ci";
 import { TbMoneybag } from "react-icons/tb";
 import Category from "./Actions/Category";
 import Degisn from "./Actions/Degisn";
-import Product from "./Actions/Product";
 import Shipping from "./Actions/Shipping";
 import Order from "./Actions/Order";
+import Product from "./Actions/Product";
 import "../static/admin.css";
 
 const navContent = [
   {
-    title: "Product",
+    title: "product"
   },
   {
     title: "Order",
@@ -66,6 +66,20 @@ const SideNav = (props) => {
   );
 };
 
+export const withAdmin = (WrappedComponent) => {
+  class NewComponent extends React.Component {
+    render() {
+      return (
+        <>
+          <WrappedComponent {...this.props} />
+        </>
+      );
+    }
+  }
+
+  return NewComponent;
+};
+
 function AdminDashboard() {
   const [render, setRender] = React.useState(null);
   const renderFunction = (obj) => {
@@ -79,12 +93,12 @@ function AdminDashboard() {
         return <Category />;
       case "page design":
         return <Degisn />;
-      case "Product":
-        return <Product />;
       case "Shipping":
         return <Shipping />;
       case "Order":
-        return <Order />
+        return <Order />;
+      case "product":
+        return <Product />
     }
   };
 
@@ -125,5 +139,5 @@ function AdminDashboard() {
     </div>
   );
 }
-
-export default AdminDashboard;
+const EnhancedAdmin = withAdmin(AdminDashboard);
+export default EnhancedAdmin;

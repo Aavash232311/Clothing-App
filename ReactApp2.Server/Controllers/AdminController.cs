@@ -24,44 +24,30 @@ namespace ReactApp2.Server.Controllers
         {
             this.context = context;
         }
-
-        [Route("addCategory")]
+        [Route("createCategory")]
         [HttpPost]
-        public async Task<IActionResult> AddCategory(CategorySearlized category)
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateCategory(string newCategory)
         {
-            if (category.Type == "") return new JsonResult(BadRequest());
-            Category newCategory = new Category();
-            if (category.Parent != "")
-            {
-                try
-                {
-                    var parent = this.context.Categories.Where(x => x.Id == Guid.Parse(category.Parent)).FirstOrDefault();
-                    if (parent != null)
-                    {
-                        newCategory.Parent = parent;
-                    }
-
-                }
-                catch (Exception ex) { return new JsonResult(BadRequest(new { error = ex })); }
-            }
-            newCategory.ProductCategory = category.Type;
-            var ent = this.context.Add(newCategory);
-            await this.context.SaveChangesAsync();
+            context.Categories.Add(new Category() { ProductCategory = newCategory });
+            await context.SaveChangesAsync();
             return new JsonResult(Ok());
         }
-        [Route("searchCategory")]
-        [HttpGet]
-        public IActionResult GetSearchedCategory(string query)
+        [Route("categoryHierarchy")]
+        [HttpPost]
+        [AllowAnonymous] // for test :(
+        public async Task<IActionResult> CategoryHierarchy(Guid parentId, string newCategory)
         {
-            if (!string.IsNullOrEmpty(query) && query.Length > 2)
+            var getParent = context.Categories.Where(x => x.Id == parentId).Include(c => c.Children).FirstOrDefault();
+            if (getParent == null) { return new JsonResult(BadRequest()); }
+            Category category = new Category()
             {
-                var results = this.context.Categories
-                    .Include(c => c.Parent)
-                    .Where(x => x.ProductCategory.ToLower().Contains(query.ToLower()))
-                    .Take(10);
-                return new JsonResult(Ok(new { result = results }));
-            }
-            return new JsonResult(NotFound());
+                ProductCategory = newCategory,
+                ParentId = getParent.Id.ToString()
+            };
+            getParent.Children.Add(category);
+            await context.SaveChangesAsync();
+            return new JsonResult(Ok());
         }
 
         [Route("InitinalCategory")]
@@ -82,34 +68,6 @@ namespace ReactApp2.Server.Controllers
                 {
                     context.Categories.Remove(getCategory);
                     await context.SaveChangesAsync();
-                }
-                return new JsonResult(Ok());
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(BadRequest(new { message = ex }));
-            }
-        }
-        [Route("updateCategory")]
-        [HttpPost]
-        public async Task<IActionResult> UpdateCategory(string id, CategorySearlized category)
-        {
-            try
-            {
-                var getCategory = this.context.Categories.Where(x => x.Id == Guid.Parse(id)).FirstOrDefault();
-                if (getCategory != null)
-                {
-                    getCategory.ProductCategory = category.Type;
-                    if (category.Parent != "")
-                    {
-                        var getParent = this.context.Categories.Where(x => x.Id == Guid.Parse(category.Parent)).FirstOrDefault();
-                        if (getParent != null && id != category.Parent)
-                        {
-                            getCategory.Parent = getParent;
-                        }
-                    }
-                    await context.SaveChangesAsync();
-
                 }
                 return new JsonResult(Ok());
             }

@@ -235,11 +235,14 @@ namespace ReactApp2.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("Highlighted")
                         .HasColumnType("bit");
 
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ParentId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProductCategory")
                         .IsRequired()
@@ -250,7 +253,7 @@ namespace ReactApp2.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Categories");
                 });
@@ -380,6 +383,46 @@ namespace ReactApp2.Server.Migrations
                     b.ToTable("Featureds");
                 });
 
+            modelBuilder.Entity("ReactApp2.Server.Models.OptionsStructure", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<Guid?>("ProductCheckId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductCheckId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("optionsStructures");
+                });
+
             modelBuilder.Entity("ReactApp2.Server.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -389,17 +432,15 @@ namespace ReactApp2.Server.Migrations
                     b.Property<DateTime>("Added")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("AvalibleSize")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Brand")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Breadth")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -412,28 +453,58 @@ namespace ReactApp2.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Gender")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("int");
 
                     b.Property<string>("Images")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("InStock")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("SKU")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShippingNotes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tags")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId1")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("WarrantyInfo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("FeaturedId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Products");
                 });
@@ -452,9 +523,6 @@ namespace ReactApp2.Server.Migrations
 
                     b.Property<int>("qty")
                         .HasColumnType("int");
-
-                    b.Property<string>("size")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("totalPrice")
                         .HasColumnType("decimal(18,2)");
@@ -536,11 +604,9 @@ namespace ReactApp2.Server.Migrations
 
             modelBuilder.Entity("ReactApp2.Server.Models.Category", b =>
                 {
-                    b.HasOne("ReactApp2.Server.Models.Category", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("Parent");
+                    b.HasOne("ReactApp2.Server.Models.Category", null)
+                        .WithMany("Children")
+                        .HasForeignKey("CategoryId");
                 });
 
             modelBuilder.Entity("ReactApp2.Server.Models.Checkout", b =>
@@ -561,15 +627,33 @@ namespace ReactApp2.Server.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ReactApp2.Server.Models.OptionsStructure", b =>
+                {
+                    b.HasOne("ReactApp2.Server.Models.ProductCheck", null)
+                        .WithMany("option")
+                        .HasForeignKey("ProductCheckId");
+
+                    b.HasOne("ReactApp2.Server.Models.Product", null)
+                        .WithMany("Options")
+                        .HasForeignKey("ProductId");
+                });
+
             modelBuilder.Entity("ReactApp2.Server.Models.Product", b =>
                 {
+                    b.HasOne("ReactApp2.Server.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("ReactApp2.Server.Models.Featured", null)
                         .WithMany("Products")
                         .HasForeignKey("FeaturedId");
 
                     b.HasOne("ReactApp2.Server.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Category");
 
                     b.Navigation("User");
                 });
@@ -593,6 +677,11 @@ namespace ReactApp2.Server.Migrations
                     b.Navigation("user");
                 });
 
+            modelBuilder.Entity("ReactApp2.Server.Models.Category", b =>
+                {
+                    b.Navigation("Children");
+                });
+
             modelBuilder.Entity("ReactApp2.Server.Models.Checkout", b =>
                 {
                     b.Navigation("products");
@@ -601,6 +690,16 @@ namespace ReactApp2.Server.Migrations
             modelBuilder.Entity("ReactApp2.Server.Models.Featured", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("ReactApp2.Server.Models.Product", b =>
+                {
+                    b.Navigation("Options");
+                });
+
+            modelBuilder.Entity("ReactApp2.Server.Models.ProductCheck", b =>
+                {
+                    b.Navigation("option");
                 });
 #pragma warning restore 612, 618
         }

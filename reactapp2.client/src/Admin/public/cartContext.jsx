@@ -16,7 +16,7 @@ export const CartProvider = ({ children }) => {
     localStorage.removeItem("cart");
   }
 
-  const addToCart = (p, size, quantity) => {
+  const addToCart = (p, options, quantity) => {
     const id = p.id;
     const existingItemIndex = items.findIndex((item) => item.p.id === id);
     // we need to assign id, quatntity and size to the local storage and even update if necessary
@@ -27,7 +27,7 @@ export const CartProvider = ({ children }) => {
       } else {
         updatedItems[existingItemIndex].quantity++;
       }
-      updatedItems[existingItemIndex].size = size;
+      updatedItems[existingItemIndex].size = options;
       // here update in local storage too
       let getItem = JSON.parse(localStorage.getItem("cart"));
       getItem = getItem.filter((x) => x.id != id); // first we filter item not having that we want to update
@@ -35,7 +35,7 @@ export const CartProvider = ({ children }) => {
         // we create a new instance of updated object
         id,
         qty: updatedItems[existingItemIndex].quantity,
-        size: (updatedItems[existingItemIndex].size = size),
+        options: (updatedItems[existingItemIndex].options = options),
       };
       getItem.push(obj); // we assign it
       localStorage.setItem("cart", JSON.stringify(getItem));
@@ -43,11 +43,12 @@ export const CartProvider = ({ children }) => {
     } else {
       // we need first check to see if its null.
       // if not null then we need to appened it because we might have some other object already
+      // UPDATE CASE
       let cart = localStorage.getItem("cart");
       const obj = {
         id,
         qty: 1,
-        size,
+        options,
       };
       if (cart === null) {
         localStorage.setItem("cart", JSON.stringify([obj]));
@@ -56,7 +57,7 @@ export const CartProvider = ({ children }) => {
         getItem.push(obj);
         localStorage.setItem("cart", JSON.stringify(getItem));
       }
-      setItems([...items, { p, quantity: 1, size }]);
+      setItems([...items, { p, quantity: 1, options }]);
     }
   };
 
@@ -95,7 +96,7 @@ export const CartProvider = ({ children }) => {
               var p = value.find((x) => x.id == id);
               temp.push({
                 p,
-                size: i.size,
+                options: i.options,
                 quantity: i.qty,
               });
             });

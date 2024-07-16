@@ -3,7 +3,50 @@
   width: 100%;
   height: 100vh;
 }
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 18px;
+  text-align: left;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+}
+.wrapped-text {
+  justify-content: left;
+  white-space: nowrap;
+  text-align: left;
+  font-weight: lighter;
+}
+.custom-table thead tr {
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
+  width: 100%;
+}
+.custom-table th,
+.custom-table td {
+  padding: 12px 15px;
+  border: 1px solid #dddddd;
+  width: 100%;
+}
+.custom-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+.custom-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+.custom-table tbody tr:last-of-type {
+  border-bottom: 2px solid #d7f7f0;
+}
 
+.product-description tr {
+  width: 100%;
+}
+
+.product-description td {
+  border: 1px solid rgb(188, 187, 187);
+  font-weight: bold;
+}
 #product-orientation-frame {
   width: 100%;
 }
@@ -33,6 +76,10 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 6px;
   cursor: pointer;
+  float: left;
+  justify-content: left;
+  align-items: left;
+  text-align: left;
 }
 .grid-sizes {
   width: 100%;
@@ -74,8 +121,8 @@
 
 #add-to-cart {
   width: 350px;
-  margin-left: 50px;
   margin-top: 10px;
+  float: left;
 }
 
 .button-28:disabled {
@@ -93,10 +140,22 @@
   box-shadow: none;
   transform: translateY(0);
 }
-
-
+.product-options-view-label {
+  width: 150%;
+  justify-content: left;
+  padding: 50px;
+  border: 1px solid black;
+  text-align: left;
+  height: 50px;
+}
+.product-options-select-frame {
+  width: 100%;
+  justify-content: left;
+  text-align: left;
+  padding: 50px;
+}
 #info-div-view-products {
-  height: 500px;
+  height: 600px;
   overflow: auto;
   overflow: -moz-scrollbars-none; /* Hide scrollbar for Firefox */
   -ms-overflow-style: none; /* Hide scrollbar for Edge */
@@ -128,7 +187,8 @@
   min-height: 80px;
   height: auto;
   float: left;
-  margin-left: 50px;
+  justify-content: left;
+  align-items: left;
 }
 
 .preview-iamges {
@@ -160,11 +220,18 @@
   height: 800px;
 }
 @media screen and (max-width: 1020px) {
+  .product-options-select-frame {
+    padding: 0;
+  }
   .view-product-label,
   #select-product-size,
   #add-to-cart {
     margin-left: 0;
     margin-left: 5px;
+    margin-top: 5px;
+    text-align: left;
+    text-align: center;
+    width: 90%;
   }
   #select-product-size,
   #des {
@@ -207,14 +274,14 @@
   }
   #info-div-view-products {
     width: 100%;
-    height: 100vh;
+    height: auto;
     overflow: hidden;
     scrollbar-width: auto;
     margin-top: 100px;
     z-index: -99999999999999;
   }
   #view-bg-frame {
-    height: 1000px;
+    height: auto;
   }
   #product-info-mobile {
     height: 100%;

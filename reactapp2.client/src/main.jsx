@@ -6,7 +6,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Login from "./authentication/login.jsx";
 import SignUp from "./authentication/signup.jsx";
-import AdminDashboard from "./Admin/Admin.jsx";
 import SignInSide from "./authentication/register.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
 import LoginCode from "./authentication/LoginCode.jsx";
@@ -16,6 +15,8 @@ import { CartProvider } from "./Admin/public/cartContext.jsx";
 import { AuthProvider } from "./authentication/auth.jsx";
 import Services from "./utils/utils.js";
 import Bag from "./Admin/public/Cart.jsx";
+import Product from "./Admin/Actions/Product.jsx";
+import EnhancedAdmin from "./Admin/Admin.jsx";
 
 let router = [
   {
@@ -35,7 +36,7 @@ let router = [
   },
   {
     path: "/AdminDashboard",
-    element: <AdminDashboard />,
+    element: <EnhancedAdmin />,
     allowedRoles: ["superuser"],
   },
   {
@@ -69,6 +70,7 @@ let router = [
 var services = new Services();
 const rt = localStorage.getItem("refreshToken");
 const at = localStorage.getItem("authToken");
+console.log("Refresh Interval");
 if (at != null && rt != null) {
   const refresh = () => {
     services
@@ -86,7 +88,7 @@ if (at != null && rt != null) {
   // lets add a mechanism to refresh out token on the interval of 36000s = 1hr
   // we can't exactly do 1 hr because
   // nothing in this world is real time even the light
-  setInterval(refresh, 55 * 60 * Math.pow(10, 3));
+  setInterval(refresh, 60000 * 15);
 }
 
 let fitered = router.filter((i) => {

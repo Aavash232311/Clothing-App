@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using ReactApp2.Server.Data;
 using ReactApp2.Server.Models;
-using System.Drawing;
-
 namespace ReactApp2.Server.Controllers
 {
     public class Ids
@@ -18,8 +15,8 @@ namespace ReactApp2.Server.Controllers
     {
         public Guid ProductId { get; set; }
         public int qty { get; set; }
-        public string? size { get; set; } = string.Empty;
         public decimal? totalPrice { get; set; } = 0;
+        public List<Guid> option { get; set; } = new List<Guid>();
     }
     public class SearlizedCheckout
     {
@@ -46,7 +43,7 @@ namespace ReactApp2.Server.Controllers
         [HttpGet]
         public IActionResult OrderGet(Guid id)
         {
-            var getOrder = context.Checkouts.Where(x => x.Id == id).FirstOrDefault();
+            var getOrder = context.Checkouts.Include(p => p.products).Where(x => x.Id == id).FirstOrDefault();
             return new JsonResult(Ok(getOrder));
         }
         [Route("deliveryCharge")]
@@ -62,26 +59,35 @@ namespace ReactApp2.Server.Controllers
         public async Task<IActionResult> CheckOutPorudct(SearlizedCheckout CheckOutProduct)
         {
             decimal Total = 0;
-            List <ProductCheck> product = new List<ProductCheck>();
+            List<ProductCheck> product = new List<ProductCheck>();
             var user = await userManager.GetUserAsync(HttpContext.User) as ApplicationUser;
             if (user == null)
             {
                 return Unauthorized(new { message = "Unauthorized access." });
             }
-            foreach (var  i in CheckOutProduct.CheckOutProducts)
+            foreach (var i in CheckOutProduct.CheckOutProducts)
             {
                 // since we don't want to be dependent upon prcie for frontend
                 var getProduct = context.Products.Where(x => x.Id == i.ProductId).FirstOrDefault();
                 if (getProduct == null) { return new JsonResult(BadRequest(new { message = "something went wrong :(" })); }
                 Total += getProduct.Price * i.qty;
-
+                // we need to fetch list of options that user has selected
+                List<OptionsStructure> optionsStructures = new List<OptionsStructure>();
+                foreach (var j in i.option)
+                {
+                    var getOptions = context.optionsStructures.Where(x => x.Id == j).FirstOrDefault();
+                    if (getOptions != null)
+                    {
+                        optionsStructures.Add(getOptions);
+                    }
+                }
                 product.Add(new ProductCheck
                 {
                     qty = i.qty,
                     totalPrice = getProduct.Price * i.qty,
-                    size = i.size,
                     user = user,
-                    product = getProduct
+                    product = getProduct,
+                    option = optionsStructures 
                 });
                 var additionalCharge = context.Deliveries.FirstOrDefault();
                 if (additionalCharge != null)
@@ -112,7 +118,7 @@ namespace ReactApp2.Server.Controllers
             try
             {
                 Guid getId = Guid.Parse(id);
-                var product = context.Products.Where(x => x.Id == getId).FirstOrDefault();
+                var product = context.Products.Include(o => o.Options).Where(x => x.Id == getId).FirstOrDefault();
                 return new JsonResult(Ok(product));
             }
             catch (Exception ex)
@@ -120,7 +126,7 @@ namespace ReactApp2.Server.Controllers
                 return new JsonResult(BadRequest(new { message = ex.Message }));
             }
         }
-        [Route("get-category-procuts")]
+ /*       [Route("get-category-procuts")]
         [HttpGet]
         public IActionResult GetCategoryProduct(string id, int page)
         {
@@ -144,7 +150,7 @@ namespace ReactApp2.Server.Controllers
                 return new JsonResult(Ok(new {value = take, page= range + 1}));
             }
             catch (Exception ex) { return new JsonResult(BadRequest(new {message = ex.Message})); }
-        }
+        }*/
         [Route("get-category-by-id")]
         [HttpGet]
         public IActionResult GetCategoryByName(string id)
@@ -166,10 +172,31 @@ namespace ReactApp2.Server.Controllers
             Guid[] arr = items.id;
             if (arr != null && arr.Length > 0 && arr.Length <= 20)
             {
-             var products = context.Products.Where(x => arr.Contains(x.Id));
+             var products = context.Products.Include(o => o.Options).Where(x => arr.Contains(x.Id));
              return new JsonResult(Ok(products));
             }
             return new JsonResult(BadRequest(new {message = "invalid entry"}));
+        }
+        [Route("category-hierarchy-intial-first-order")]
+        [HttpGet]
+        public IActionResult GetCategoryHierarchy()
+        {
+
+            return new JsonResult(Ok(context.Categories.Where(x => x.ParentId == string.Empty).Include(p => p.Children).ToList().Take(10)));
+        }
+        [Route("search-category-all-orders")]
+        [HttpGet]
+        public IActionResult GetResult(string search)
+        {
+            var categories = context.Categories.Include(c => c.Children).Take(5);
+            return new JsonResult(Ok(categories));
+        }
+        [Route("category-depthin")]
+        [HttpGet]
+        public IActionResult ChildrenSeatch(Guid parentId)
+        {
+            var res = context.Categories.Where(x => x.Id == parentId).Include(c => c.Children).FirstOrDefault();
+            return new JsonResult(Ok(res));
         }
     }
 }

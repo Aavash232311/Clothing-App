@@ -227,7 +227,11 @@ class Order extends Component {
                   </thead>
                   <tbody>
                     {this.state.dialog.map((i, j) => {
-                      const { product } = i;
+                      const { product, option } = i;
+                      const optionNameTypePair = [];
+                      option.map((l, m) => {
+                        optionNameTypePair.push({type: l.type, name: l.name})
+                      });
                       return (
                         <tr key={i.id}>
                           <th scope="row">{j + 1}</th>
@@ -256,7 +260,15 @@ class Order extends Component {
                             ></img>
                           </td>
                           <td>{product.name}</td>
-                          <td>{i.size}</td>
+                          <td>
+                          {optionNameTypePair.map((l, m) => {
+                            return (
+                              <div key={m}>
+                                <span style={{fontWeight: "bold", fontSize: "10px"}}>{l.type}</span>: <span style={{color: "gray"}}>{l.name}</span> <br />
+                              </div>
+                            )
+                          })}
+                          </td>
                           <td>{i.qty}</td>
                           <td>
                             {" "}

@@ -8,6 +8,7 @@ class Bag extends Component {
     product: null,
     price: 0,
     shipping: null,
+    selectedOptions: [],
   };
 
   constructor(props) {
@@ -50,13 +51,17 @@ class Bag extends Component {
   submit(ev) {
     const { destructiveState } = this.context;
     ev.preventDefault();
-    const { product } = this.state; // this product has the product, quantity and size that we want to checkout
+    const { items } = this.context; // this product has the product, quantity and size that we want to checkout
     const normalizedProduct = [];
-    product.map((obj) => {
+    items.map((obj) => {
+      const optionGuid = [];
+      obj.options.map((i) => {
+        optionGuid.push(i.id);
+      })
       normalizedProduct.push({
-        ProductId: obj.id,
-        qty: obj.qty,
-        size: obj.size,
+        ProductId: obj.p.id,
+        qty: obj.quantity,
+        option: optionGuid
       });
     });
     this.setState({ CheckOutProducts: normalizedProduct }, () => {
@@ -74,7 +79,6 @@ class Bag extends Component {
         })
         .then((response) => {
           const { statusCode } = response;
-          console.log(response);
           if (statusCode === 200) {
             destructiveState();
             this.setState({
@@ -94,17 +98,21 @@ class Bag extends Component {
     });
 
     const updateAble = (id, toUpdate, ev) => {
-      // to update either size, or quantity or even sometihng more if we want to add up
-      const { value } = ev.target;
+      // // to update either size, or quantity or even sometihng more if we want to add up
+      // we want to go to the selected options of THAT PRODUCT AND REPLACE A OPTION OBJECT
+      let { value } = ev.target;
+      value = JSON.parse(value);
       const p = items.find((x) => x.p.id === id);
+      let options = [...p.options].filter((x) => x.type != value.type);
       if (toUpdate === "qty") {
         // here set the default size,
-        addToCart(p.p, p.size, parseInt(value)); // in this case value = quantity
+        addToCart(p.p, options, parseInt(value)); // in this case value = quantity
       } else {
-        addToCart(p.p, value, p.quantity);
+        options.push(value);
+        addToCart(p.p, options, p.quantity);
       }
-      // since the attributes are updated, we can update our local compoenet state as well
-      this.setState({ product: JSON.parse(localStorage.getItem("cart")) }); // basically local store is updated as well
+      // // since the attributes are updated, we can update our local compoenet state as well
+      // this.setState({ product: JSON.parse(localStorage.getItem("cart")) }); // basically local store is updated as well
     };
     // checkout from
     // make sure the form works considering the case the user is logged in
@@ -130,6 +138,23 @@ class Bag extends Component {
                           <div key={Math.random(0, 1000)}>
                             {items.map((i) => {
                               const product = i.p;
+                              // here we need to classify filter options
+                              const { options } = i.p;
+                              // i.options is the selected options
+                              const type = [];
+                              options.map((j) => {
+                                const currType = j.type;
+                                if (type.indexOf(currType) === -1) {
+                                  type.push(currType);
+                                }
+                              });
+                              const struct = [];
+                              type.map((j) => {
+                                struct.push({
+                                  type: j,
+                                  options: options.filter((x) => x.type === j),
+                                });
+                              });
                               return (
                                 <div
                                   className="cart-product-frame"
@@ -167,32 +192,48 @@ class Bag extends Component {
                                           : "Women's"}
                                       </li>
                                       <li className="product-cart-font">
-                                        {product.avalibleSize.length > 0 ? (
-                                          <>
-                                            Size:
-                                            <select
-                                              defaultValue={i.size}
-                                              className="cart-options"
-                                              onInput={(ev) => {
-                                                updateAble(
-                                                  product.id,
-                                                  "size",
-                                                  ev
-                                                );
-                                              }}
-                                            >
-                                              {product.avalibleSize.map(
-                                                (k, l) => {
-                                                  return (
-                                                    <option key={l} value={k}>
-                                                      {k}
-                                                    </option>
-                                                  );
-                                                }
-                                              )}
-                                            </select>{" "}
-                                          </>
-                                        ) : null}
+                                        {struct.length > 0
+                                          ? struct.map((k, l) => {
+                                              const selectOptions = k.options;
+                                              // now we need to assign the slected value
+                                              const defValue = i.options.find(
+                                                (x) => x.type == k.type
+                                              );
+                                              return (
+                                                <div key={Math.random(0, 1000)}>
+                                                  {k.type} {" : "}
+                                                  <select
+                                                    defaultValue={JSON.stringify(
+                                                      defValue
+                                                    )}
+                                                    onInput={(ev) => {
+                                                      updateAble(
+                                                        product.id,
+                                                        "size",
+                                                        ev
+                                                      );
+                                                    }}
+                                                    className="qty-cart"
+                                                  >
+                                                    {selectOptions.map(
+                                                      (l, m) => {
+                                                        return (
+                                                          <option
+                                                            key={l.id}
+                                                            value={JSON.stringify(
+                                                              l
+                                                            )}
+                                                          >
+                                                            {l.name}
+                                                          </option>
+                                                        );
+                                                      }
+                                                    )}
+                                                  </select>
+                                                </div>
+                                              );
+                                            })
+                                          : null}
                                         Quantity:
                                         <select
                                           defaultValue={i.quantity}
