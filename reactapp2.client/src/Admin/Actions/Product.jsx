@@ -23,7 +23,8 @@ import "../../static/product.css";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import Services from "../../utils/utils";
 
-export class CategoryHierarchy extends Component { // category does not saves in the db bug
+export class CategoryHierarchy extends Component {
+  // category does not saves in the db bug
   constructor(props) {
     super(props);
     this.update = this.update.bind(this);
@@ -226,6 +227,8 @@ class Product extends Component {
     Length: null,
     Breadth: null,
     Gender: "male",
+    page: 1,
+    product: [],
   };
   CategoryRef = React.createRef();
   NameRef = React.createRef();
@@ -311,10 +314,10 @@ class Product extends Component {
         .then((rsp) => rsp.json())
         .then((response) => {
           const { statusCode, value } = response;
-          
         });
     });
   };
+
   unsetExpandOptions = () => {
     this.setState({ OptionsExpand: false });
   };
@@ -329,8 +332,48 @@ class Product extends Component {
     this.setState({ [name]: value });
   }
   componentDidMount() {
-    this.setState({ isLayoutReady: true });
+    this.setState({ isLayoutReady: true }, () => {
+      this.fetchProductByPage(this.state.page);
+    });
   }
+
+  fetchProductByPage = (page) => {
+    if (find === undefined) {
+      fetch(`/staff/product-table?page=${page}`, {
+        method: "get",
+        headers: {
+          Authorization: `Bearer ${this.services.getToken()}`,
+          "Content-Tpe": "application/json",
+        },
+      })
+        .then((rsp) => rsp.json())
+        .then((response) => {
+          const { value, statusCode } = response;
+          if (statusCode !== 200) return;
+          // product = {page: ..., value: ...}
+          // optimization
+          if (page === 1) {
+            this.setState({product: {
+              page: page,
+              value
+            }});
+            return;
+          }
+          this.setState(
+            (p) => ({
+              product: [
+                ...p.product,
+                {
+                  page: this.state.page,
+                  value,
+                },
+              ],
+            }),
+            () => {}
+          );
+        });
+    }
+  };
   constructor(props) {
     super(props);
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -338,6 +381,7 @@ class Product extends Component {
     this.update = this.update.bind(this);
     this.unsetExpandOptions = this.unsetExpandOptions.bind(this);
     this.submit = this.submit.bind(this);
+    this.fetchProductByPage = this.fetchProductByPage.bind(this);
   }
   deleteImageDom(ev) {
     let node = ev.target;
@@ -687,7 +731,7 @@ class Product extends Component {
                 Categories <span className="methyl-orange">*</span> <hr />
                 <CategoryHierarchy
                   onValueChange={(v) => {
-                    console.log(v.id)
+                    console.log(v.id);
                     this.setState({ Category: v.id });
                   }}
                 />
@@ -796,13 +840,15 @@ class Product extends Component {
             </div>
           </div>
         </div>
-        <hr style={{visibility: "hidden"}} />
+        <hr style={{ visibility: "hidden" }} />
         <div id="product-crud">
-          <div className="roboto-condensed-light">
-            Your Products
-          </div>
+          <div className="roboto-condensed-light">Your Products</div>
           <hr />
-          
+          {this.state.product.length > 0
+            ? this.state.product.map((i, j) => {
+                return <div key={Math.random(0, 100)}>{i.page}</div>;
+              })
+            : null}
         </div>
       </div>
     );

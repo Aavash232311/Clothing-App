@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
 using ReactApp2.Server.Data;
 using ReactApp2.Server.Models;
-using System.ComponentModel.DataAnnotations;
 namespace ReactApp2.Server.Controllers
 {
 
@@ -74,6 +72,46 @@ namespace ReactApp2.Server.Controllers
             this.userManager = userManager;
             this.helper = new Helper();
         }
+        /*       [Route("test-product-seed")]
+               [HttpGet]
+               public async Task<IActionResult> SeedTable()
+               {
+                   Random random = new Random();
+                   var user = await userManager.GetUserAsync(HttpContext.User);
+                   for (int i = 0; i <= 40; i++)
+                   {
+                       Product product = new Product
+                       {
+                           Name = "Product " + i,
+                           SKU = "",
+                           Brand = "Nike",
+                           Price = random.Next(5, 1000),
+                           Images = new List<string>() { },
+                           Description = "random description",
+                           Gender = "male",
+                           ShippingNotes = "careful!",
+                           WarrantyInfo = "1 year international warranty",
+                           InStock = true,
+                           Length = 10,
+                           Height = 15,
+                           Breadth = 15,
+                           Tags = new List<String>() { "shoes" },
+                           Category = context.Categories.Where(x => x.Id == Guid.Parse("1314E450-F989-454A-FB0F-08DC9D3C49B9")).FirstOrDefault(),
+                           User = user,
+                           Options = new List<OptionsStructure>() {
+                               new OptionsStructure {
+                                   Name = "UK 5.5",
+                                   type = "AvalibleSize"
+                               }
+                           },
+                           Discount = 0
+                       };
+                       context.Products.Add(product);
+                   }
+                   await context.SaveChangesAsync();
+                   return new JsonResult(Ok());
+               }*/
+
         [Route("complex-product-form")]
         [Authorize(Roles = "superuser, staff")]
         [HttpPut]
@@ -206,6 +244,21 @@ namespace ReactApp2.Server.Controllers
             int RecordPerPage = 4;
             var Partition = orders.Skip((page - 1) * RecordPerPage).Take(RecordPerPage);
             return new JsonResult(Ok(new {page = (int)Math.Ceiling((double)orders.Count() / RecordPerPage), orders = Partition }));
+        }
+        [Route("product-table")]
+        [Authorize(Roles = "superuser, staff")]
+        [HttpGet]
+        public IActionResult GetProducts(int page)
+        {
+            if (page == 0)
+            {
+                return new JsonResult(BadRequest("!0"));
+            }
+            var product = context.Products.Include(o => o.Options).OrderByDescending(x => x.Added);
+            int RecordPerPage = 4;
+            var Partition = product.Skip((page - 1) * RecordPerPage).Take(RecordPerPage);
+            if (product == null) return new JsonResult(NotFound());
+            return new JsonResult(Ok(new {page = (int)Math.Ceiling((double)product.Count() / RecordPerPage), products = Partition }));
         }
         [Route("set-delivery-charge")]
         [Authorize(Roles = "superuser, staff")]
@@ -355,51 +408,7 @@ namespace ReactApp2.Server.Controllers
             await context.SaveChangesAsync();
             return new JsonResult(Ok());
         }
-    /*    [HttpPut]
-        [Route("complex-form")]
-        [Authorize(Roles = "superuser, staff")]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> DynamicFormProballyWillHurt([FromForm] ProductSear productSearlized)
-        {
-            if (!ModelState.IsValid)
-            {
-                return new JsonResult(BadRequest(ModelState));
-            }
-            var images = productSearlized.image;
-            List<String> SavedImages = new List<String>();
-            // here there are n number of images (since fancy dyanamic form is made)
-            foreach (var img in images)
-            {
-                var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "images", img.FileName);
-                var contentType = img.ContentType;
-                var isImage = contentType.StartsWith("image/");
-                if (!isImage) { return new JsonResult(BadRequest("Unsupported file ")); }
-                using (var stream = new FileStream(imagePath, FileMode.Create))
-                {
-                    await img.CopyToAsync(stream);
-                }
-                // images folder in the server is all the public images
-                SavedImages.Add(Path.Combine("images", img.FileName));
-            }
-            if (productSearlized.addedCategory == null || productSearlized.addedCategory.Count() == 0)
-            {
-                return new JsonResult(BadRequest("Category cannot be null"));
-            }
-            var product = new Product
-            {
-                Name = productSearlized.Name,
-                Price = productSearlized.Price,
-                Discount = productSearlized.Discount,
-                Brand = productSearlized.Brand,
-                AvalibleSize = productSearlized.AvalibleSize,
-                Images = SavedImages,
-                Category = productSearlized.addedCategory,
-                Description = productSearlized.Description,
-            };
-            context.Products.Add(product);
-            await context.SaveChangesAsync();
-            return new JsonResult(Ok(product));
-        }*/
+
         [Route("get-procuts")]
         [AllowAnonymous]
         [HttpGet]
