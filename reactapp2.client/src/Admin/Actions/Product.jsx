@@ -212,24 +212,6 @@ const Remove = () => {
 };
 
 class Product extends Component {
-  state = {
-    isLayoutReady: false,
-    Description: null,
-    Name: null,
-    imageCount: 0,
-    tags: [],
-    setTag: "",
-    Category: null,
-    OptionsExpand: false,
-    InStock: true,
-    Price: null,
-    Height: null,
-    Length: null,
-    Breadth: null,
-    Gender: "male",
-    page: 1,
-    product: [],
-  };
   CategoryRef = React.createRef();
   NameRef = React.createRef();
   DescriptionRef = React.createRef();
@@ -333,46 +315,26 @@ class Product extends Component {
   }
   componentDidMount() {
     this.setState({ isLayoutReady: true }, () => {
-      this.fetchProductByPage(this.state.page);
+      this.fetchProductByPage(1);
+      // if for some reason u use ths.state.page
+      // obviously it will triger due to it being dependent
     });
   }
 
-  fetchProductByPage = (page) => {
-    if (find === undefined) {
-      fetch(`/staff/product-table?page=${page}`, {
-        method: "get",
-        headers: {
-          Authorization: `Bearer ${this.services.getToken()}`,
-          "Content-Tpe": "application/json",
-        },
-      })
-        .then((rsp) => rsp.json())
-        .then((response) => {
-          const { value, statusCode } = response;
-          if (statusCode !== 200) return;
-          // product = {page: ..., value: ...}
-          // optimization
-          if (page === 1) {
-            this.setState({product: {
-              page: page,
-              value
-            }});
-            return;
-          }
-          this.setState(
-            (p) => ({
-              product: [
-                ...p.product,
-                {
-                  page: this.state.page,
-                  value,
-                },
-              ],
-            }),
-            () => {}
-          );
-        });
-    }
+  fetchProductByPage = async (page) => {
+    const data = await fetch(`/staff/product-table?page=${page}`, {
+      method: "get",
+      headers: {
+        Authorization: `Bearer ${this.services.getToken()}`,
+        "Content-Tpe": "application/json",
+      },
+    });
+    const response = await data.json();
+    const { value, statusCode } = response;
+    if (statusCode !== 200) return;
+    // product = {page: ..., value: ...}
+    // optimization
+    this.setState({ product: value }, () => {});
   };
   constructor(props) {
     super(props);
@@ -382,6 +344,7 @@ class Product extends Component {
     this.unsetExpandOptions = this.unsetExpandOptions.bind(this);
     this.submit = this.submit.bind(this);
     this.fetchProductByPage = this.fetchProductByPage.bind(this);
+    this.editProduct = this.editProduct.bind(this);
   }
   deleteImageDom(ev) {
     let node = ev.target;
@@ -392,6 +355,34 @@ class Product extends Component {
       node.remove();
     }
   }
+
+  state = {
+    isLayoutReady: false,
+    Description: null,
+    Name: null,
+    imageCount: 0,
+    tags: [],
+    setTag: "",
+    Category: null,
+    OptionsExpand: false,
+    InStock: true,
+    Price: null,
+    Height: null,
+    Length: null,
+    Breadth: null,
+    Gender: "male",
+    page: 1,
+    product: null,
+  };
+
+  editProduct = (id) => {
+    if (this.state.product === null) return;
+    const { products } = this.state.product;
+    const product = products.find((x) => x.id === id);
+    for (const key in product) {
+      console.log(key, product)
+    }
+  };
   render() {
     const editorConfig = {
       toolbar: {
@@ -731,7 +722,6 @@ class Product extends Component {
                 Categories <span className="methyl-orange">*</span> <hr />
                 <CategoryHierarchy
                   onValueChange={(v) => {
-                    console.log(v.id);
                     this.setState({ Category: v.id });
                   }}
                 />
@@ -844,11 +834,67 @@ class Product extends Component {
         <div id="product-crud">
           <div className="roboto-condensed-light">Your Products</div>
           <hr />
-          {this.state.product.length > 0
-            ? this.state.product.map((i, j) => {
-                return <div key={Math.random(0, 100)}>{i.page}</div>;
-              })
-            : null}
+          {this.state.product != null ? (
+            <>
+              <table className="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Link</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Added</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                  </tr>
+                </thead>
+                {this.state.product.products.map((i, j) => {
+                  return (
+                    <tbody key={i.id}>
+                      <tr>
+                        <th scope="row">{j}</th>
+                        <td>{i.id}</td>
+                        <td>{i.name}</td>
+                        <td>
+                          <div
+                            onClick={() => {
+                              window.open(`/view?key=${i.id}`, "_blank");
+                            }}
+                            style={{ cursor: "pointer" }}
+                          >
+                            link..
+                          </div>
+                        </td>
+                        <td>
+                          <img height="28" width="28" src={i.images[0]}></img>
+                        </td>
+                        <td>{this.services.date(i.added)}</td>
+                        <td>{i.inStock === true ? "Yes" : "No"}</td>
+                        <td>
+                          <button
+                            onClick={() => {
+                              this.editProduct(i.id);
+                            }}
+                            className="btn btn-outline-secondary"
+                          >
+                            Edit
+                          </button>
+                        </td>
+                        <td>
+                          <button className="btn btn-outline-danger">
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  );
+                })}
+                <caption>Product Table</caption>
+              </table>
+            </>
+          ) : null}
         </div>
       </div>
     );
@@ -907,7 +953,6 @@ class OptionsDynamicForm extends Component {
   removePreview = (obj) => {
     const previewDummy = [...this.state.previewRender];
     const newPreviewRender = previewDummy.filter((x) => x !== obj);
-    console.log(previewDummy, obj);
     this.setState({ previewRender: newPreviewRender }, () => {
       this.props.injectStructure(this.state.previewRender);
     });

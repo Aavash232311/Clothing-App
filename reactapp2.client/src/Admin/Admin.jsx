@@ -40,8 +40,17 @@ const navContent = [
 ];
 
 const SideNav = (props) => {
+  const [top, setTop] = React.useState(null);
+
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 50) {
+      setTop("0");
+    }else{
+      setTop("50px");
+    }
+  })
   return (
-    <div id="side-nav">
+    <div style={{top}} id="side-nav">
       <center>
         <br />
         <h5 id="nav-theme-admin">ADMIN</h5>

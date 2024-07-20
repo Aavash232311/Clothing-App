@@ -50,14 +50,6 @@
 .images-preview:hover {
     border: 1px solid rgb(128, 126, 126);
 }
-#side-nav {
-    background-image: linear-gradient(
-      76.8deg,
-      rgba(121, 45, 129, 1) 3.6%,
-      rgba(36, 31, 98, 1) 90.4%
-    );
-    height: 150vh;
-  }
 .dual-input {
     display: grid;
     grid-template-columns: 50% 48%;
