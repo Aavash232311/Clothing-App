@@ -16,7 +16,7 @@ in Services/Auth.cs use your own gmail password if you are dealing with sending 
 
 "dotnet watch run" to start the server
 
-
+I switched to typescript so this project not completed...
 Concepts:
 - Seed User in database and use authentication system.
 - Use Context API's in react
