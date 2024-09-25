@@ -42,4 +42,5 @@ Concepts:
 - React URL routing
 - Language Intragated Query CRUD opreations
 - And all sort of basic stuff
+- Relational model form data append 
 >>>>>>>
